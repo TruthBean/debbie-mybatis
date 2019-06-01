@@ -1,0 +1,5 @@
+com.truthbean.debbie.mybatis.configuration.transformer.AutoMappingBehaviorTransformer
+com.truthbean.debbie.mybatis.configuration.transformer.AutoMappingUnknownColumnBehaviorTransformer
+com.truthbean.debbie.mybatis.configuration.transformer.ExecutorTypeTransformer
+com.truthbean.debbie.mybatis.configuration.transformer.JdbcTypeTransformer
+com.truthbean.debbie.mybatis.configuration.transformer.LocalCacheScopeTransformer
