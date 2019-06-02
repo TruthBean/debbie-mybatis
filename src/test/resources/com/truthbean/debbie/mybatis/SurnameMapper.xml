@@ -4,6 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.truthbean.debbie.mybatis.SurnameMapper">
     <select id="selectOne" resultType="Surname">
-    select * from surname where id = #{id}
-  </select>
+        select * from surname where id = #{id}
+    </select>
+    <select id="selectAll" resultType="Surname">
+        select * from surname
+    </select>
+
+    <update id="update">
+        update surname set origin = #{origin}, begin = #{begin}, website = #{website,jdbcType=VARCHAR}, name = #{name} where id = #{id}
+    </update>
 </mapper>

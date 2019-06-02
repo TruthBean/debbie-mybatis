@@ -21,7 +21,7 @@ public class Surname {
     private Timestamp begin;
 
     @SqlColumn(charMaxLength = 512)
-    private URL website;
+    private String website;
 
     @SqlColumn(nullable = false, unique = true)
     private String name;
@@ -50,11 +50,11 @@ public class Surname {
         this.begin = begin;
     }
 
-    public URL getWebsite() {
+    public String getWebsite() {
         return website;
     }
 
-    public void setWebsite(URL website) {
+    public void setWebsite(String website) {
         this.website = website;
     }
 

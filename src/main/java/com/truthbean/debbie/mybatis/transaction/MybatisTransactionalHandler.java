@@ -71,7 +71,6 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<MybatisTr
             } else {
                 LOGGER.debug("not rollback for this exception(" + e.getClass().getName() + "), it committed");
                 transactionInfo.commit();
-                TransactionManager.remove();
             }
         }
         throw e;
@@ -81,6 +80,7 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<MybatisTr
     public void finallyRun() {
         LOGGER.debug("runing when method (" + transactionInfo.getMethod() + ") invoke throw exception and run to finally ..");
         transactionInfo.close();
+        TransactionManager.remove();
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MybatisTransactionalHandler.class);

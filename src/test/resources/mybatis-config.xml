@@ -12,7 +12,7 @@
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
                 <property name="driver" value="org.mariadb.jdbc.Driver"/>
-                <property name="url" value="jdbc:mariadb://localhost:3306/test?characterEncoding=utf-8&amp;autoReconnect=true&amp;autoReconnectForPools=true"/>
+                <property name="url" value="jdbc:mariadb://localhost:3366/test?characterEncoding=utf-8&amp;autoReconnect=true&amp;autoReconnectForPools=true"/>
                 <property name="username" value="root"/>
                 <property name="password" value="root"/>
             </dataSource>
@@ -21,5 +21,6 @@
 
     <mappers>
         <mapper resource="com/truthbean/debbie/mybatis/SurnameMapper.xml"/>
+        <mapper class="com.truthbean.debbie.mybatis.DateTimeMapper"/>
     </mappers>
 </configuration>

@@ -1,6 +1,7 @@
 package com.truthbean.debbie.mybatis.configuration;
 
 import com.truthbean.debbie.core.bean.BeanFactory;
+import com.truthbean.debbie.core.bean.BeanFactoryHandler;
 import com.truthbean.debbie.core.bean.BeanInitialization;
 import com.truthbean.debbie.core.properties.BaseProperties;
 
@@ -17,9 +18,9 @@ public class MybatisProperties extends BaseProperties {
     //===========================================================================
 
     private MybatisConfiguration configuration;
-    private static final MybatisProperties INSTANCE = new MybatisProperties();
+    private static MybatisProperties instance;
 
-    public MybatisProperties() {
+    public MybatisProperties(BeanFactoryHandler beanFactoryHandler) {
         BeanInitialization initialization = new BeanInitialization();
         initialization.init(MyBatisConfigurationSettings.class);
         configuration = new MybatisConfiguration();
@@ -27,14 +28,17 @@ public class MybatisProperties extends BaseProperties {
         configuration.setMybatisConfigXmlLocation(getValue(MYBATIS_CONFIG_XML_LOCATION));
         configuration.setEnvironment(getStringValue(MYBATIS_ENVIRONMENT, "default"));
 
-        MyBatisConfigurationSettings settings = BeanFactory.factory(MyBatisConfigurationSettings.class);
+        MyBatisConfigurationSettings settings = beanFactoryHandler.factory(MyBatisConfigurationSettings.class);
         configuration.setSettings(settings);
 
         configuration.setConfigurationProperties(getMatchedKey(MYBATIS_PROPERTIES));
     }
 
-    public static MybatisConfiguration toConfiguration() {
-        return INSTANCE.configuration;
+    public static MybatisConfiguration toConfiguration(BeanFactoryHandler beanFactoryHandler) {
+        if (instance == null) {
+            instance = new MybatisProperties(beanFactoryHandler);
+        }
+        return instance.configuration;
     }
 
     public MybatisConfiguration loadConfiguration() {
