@@ -2,12 +2,15 @@ package com.truthbean.debbie.mybatis.transaction;
 
 import com.truthbean.debbie.jdbc.transaction.TransactionInfo;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.transaction.Transaction;
+
+import java.sql.SQLException;
 
 /**
  * @author truthbean
  * @since 0.0.2
  */
-public class MybatisTransactionInfo extends TransactionInfo {
+public class MybatisTransactionInfo extends TransactionInfo implements Transaction {
 
     private SqlSession session;
 
@@ -44,5 +47,10 @@ public class MybatisTransactionInfo extends TransactionInfo {
         } else {
             super.close();
         }
+    }
+
+    @Override
+    public Integer getTimeout() throws SQLException {
+        return getConnection().getNetworkTimeout();
     }
 }

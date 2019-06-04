@@ -79,7 +79,6 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
         }
         SqlSession session = sqlSessionFactory.openSession(transactionInfo.getConnection());
         transactionInfo.setSession(session);
-
         TransactionManager.offer(transactionInfo);
     }
 

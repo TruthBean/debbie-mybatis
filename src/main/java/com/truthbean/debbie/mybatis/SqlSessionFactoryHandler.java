@@ -20,8 +20,6 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +71,7 @@ public class SqlSessionFactoryHandler {
     }
 
     private void buildSqlSessionFactoryByXml() {
-        if (mybatisConfigXmlInputStream != null) {
+        if (mybatisConfigXmlInputStream != null && sqlSessionFactory == null) {
             sqlSessionFactory = new SqlSessionFactoryBuilder().build(mybatisConfigXmlInputStream);
         }
     }
@@ -81,10 +79,10 @@ public class SqlSessionFactoryHandler {
     private void buildConfiguration() {
         DataSourceFactory dataSourceFactory = DataSourceFactory.factory();
         DataSource dataSource = dataSourceFactory.getDataSource();
-        TransactionFactory transactionFactory = new ManagedTransactionFactory();
-        // Environment environment = new Environment(mybatisConfiguration.getEnvironment(), transactionFactory, dataSource);
-        // configuration = new Configuration(environment);
-        configuration = new Configuration();
+        TransactionFactory transactionFactory = new DebbieManagedTransactionFactory();
+        Environment environment = new Environment(mybatisConfiguration.getEnvironment(), transactionFactory, dataSource);
+        configuration = new Configuration(environment);
+        // configuration = new Configuration();
         mybatisConfiguration.getSettings().configTo(configuration);
 
         Map<String, String> configurationProperties = mybatisConfiguration.getConfigurationProperties();

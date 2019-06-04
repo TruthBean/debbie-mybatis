@@ -1,9 +1,5 @@
 package com.truthbean.debbie.mybatis.transaction;
 
-import com.truthbean.debbie.core.bean.DebbieBeanInfo;
-import com.truthbean.debbie.jdbc.transaction.TransactionInfo;
-import com.truthbean.debbie.jdbc.transaction.TransactionManager;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.transaction.TransactionFactory;
@@ -14,9 +10,10 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Creates a {@code SpringManagedTransaction}.
+ * Creates {@code MybatisTransactionInfo} instances
  *
- * @author Hunter Presnall
+ * @author truthbean
+ * @since 0.0.2
  */
 public class DebbieManagedTransactionFactory implements TransactionFactory {
 
@@ -35,7 +32,7 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
             transactionInfo.setTransactionIsolation(level.getLevel());
         }
         transactionInfo.setAutoCommit(autoCommit);
-        return new DebbieManagedTransaction(transactionInfo);
+        return transactionInfo;
     }
 
     /**
@@ -45,7 +42,7 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
     public Transaction newTransaction(Connection connection) {
         MybatisTransactionInfo transactionInfo = new MybatisTransactionInfo();
         transactionInfo.setConnection(connection);
-        return new DebbieManagedTransaction(transactionInfo);
+        return transactionInfo;
     }
 
     /**
