@@ -5,9 +5,11 @@ import com.truthbean.debbie.core.bean.BeanInitialization;
 import com.truthbean.debbie.core.bean.BeanScanConfiguration;
 import com.truthbean.debbie.core.bean.DebbieBeanInfo;
 import com.truthbean.debbie.core.properties.ClassesScanProperties;
+import com.truthbean.debbie.jdbc.datasource.DataSourceFactoryBeanRegister;
 import com.truthbean.debbie.mybatis.DebbieMapperFactory;
 import com.truthbean.debbie.mybatis.SqlSessionFactoryHandler;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 
@@ -56,5 +58,11 @@ public class MappedBeanRegister {
                 }
             }
         }
+
+        DebbieBeanInfo beanInfo = new DebbieBeanInfo<>(SqlSessionFactory.class);
+        beanInfo.setBean(handler.buildSqlSessionFactory());
+        initialization.init(beanInfo);
+        DataSourceFactoryBeanRegister.register(beanFactoryHandler, initialization);
+        beanFactoryHandler.refreshBeans();
     }
 }

@@ -2,20 +2,20 @@ package com.truthbean.debbie.mybatis;
 
 import com.truthbean.debbie.core.bean.BeanComponent;
 import com.truthbean.debbie.core.bean.BeanInject;
-import com.truthbean.debbie.mybatis.transaction.MybatisTransactional;
+import com.truthbean.debbie.jdbc.annotation.JdbcTransactional;
+import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;
 import java.util.Optional;
 
 @BeanComponent("surnameService")
-@MybatisTransactional
-public class SurnameServiceImpl implements SurnameService {
+@JdbcTransactional
+public class SurnameServiceImpl implements SurnameService, SqlSessionService {
 
-    @BeanInject
-    private SurnameMapper surnameMapper;
-
-    @MybatisTransactional(rollbackFor = ArithmeticException.class, forceCommit = false, readonly = false)
+    @JdbcTransactional(rollbackFor = ArithmeticException.class, forceCommit = false, readonly = false)
     public boolean save(Surname surname) {
+        SqlSession sqlSession = getSqlSession();
+        var surnameMapper = sqlSession.getMapper(SurnameMapper.class);
         var all = surnameMapper.selectAll();
         System.out.println(all);
         int id = surnameMapper.update(surname);
@@ -24,6 +24,8 @@ public class SurnameServiceImpl implements SurnameService {
     }
 
     public Optional<Surname> selectById(Long id) {
+        SqlSession sqlSession = getSqlSession();
+        var surnameMapper = sqlSession.getMapper(SurnameMapper.class);
         Surname surname = surnameMapper.selectOne(id);
         if (surname == null)
             return Optional.empty();
@@ -33,6 +35,8 @@ public class SurnameServiceImpl implements SurnameService {
 
     @Override
     public List<Surname> selectAll() {
+        SqlSession sqlSession = getSqlSession();
+        var surnameMapper = sqlSession.getMapper(SurnameMapper.class);
         return surnameMapper.selectAll();
     }
 

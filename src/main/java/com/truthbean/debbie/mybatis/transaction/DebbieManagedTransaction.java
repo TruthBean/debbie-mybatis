@@ -76,7 +76,7 @@ public class DebbieManagedTransaction implements Transaction {
     @Override
     public void close() {
         transactionInfo.close();
-        TransactionManager.remove();
+        //  TransactionManager.remove();
     }
 
     /**
