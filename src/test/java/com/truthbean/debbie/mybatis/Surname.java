@@ -5,12 +5,13 @@ import com.truthbean.debbie.jdbc.annotation.SqlEntity;
 import com.truthbean.debbie.jdbc.column.PrimaryKeyType;
 import org.apache.ibatis.type.Alias;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.sql.Timestamp;
 
 @Alias("Surname")
 @SqlEntity(charset = "utf8mb4")
-public class Surname {
+public class Surname implements Serializable {
 
     @SqlColumn(id = true, comment = "主键", primaryKey = PrimaryKeyType.AUTO_INCREMENT)
     private Long id;

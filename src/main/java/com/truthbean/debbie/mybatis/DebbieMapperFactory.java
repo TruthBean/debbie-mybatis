@@ -1,6 +1,6 @@
 package com.truthbean.debbie.mybatis;
 
-import com.truthbean.debbie.core.bean.BeanFactory;
+import com.truthbean.debbie.bean.BeanFactory;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**

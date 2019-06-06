@@ -1,8 +1,9 @@
 package com.truthbean.debbie.mybatis.transaction;
 
-import com.truthbean.debbie.core.bean.BeanInitialization;
-import com.truthbean.debbie.core.bean.DebbieBeanInfo;
-import com.truthbean.debbie.core.proxy.MethodProxyHandler;
+import com.truthbean.debbie.bean.BeanFactoryHandler;
+import com.truthbean.debbie.bean.BeanInitialization;
+import com.truthbean.debbie.bean.DebbieBeanInfo;
+import com.truthbean.debbie.proxy.MethodProxyHandler;
 import com.truthbean.debbie.jdbc.annotation.JdbcTransactional;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
 import com.truthbean.debbie.jdbc.transaction.MethodNoJdbcTransactionalException;
@@ -23,10 +24,14 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
     private final MybatisTransactionInfo transactionInfo = new MybatisTransactionInfo();
 
     private JdbcTransactional jdbcTransactional;
-
     private JdbcTransactional classJdbcTransactional;
 
     private int order;
+
+    private BeanFactoryHandler beanFactoryHandler;
+    private BeanInitialization beanInitialization;
+
+    private boolean autoCommit;
 
     @Override
     public int getOrder() {
@@ -59,23 +64,29 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
     }
 
     @Override
+    public void setBeanFactoryHandler(BeanFactoryHandler beanFactoryHandler) {
+        this.beanFactoryHandler = beanFactoryHandler;
+        beanInitialization = beanFactoryHandler.getBeanInitialization();
+    }
+
+    @Override
     public void before() {
         LOGGER.debug("running before method (" + transactionInfo.getMethod() + ") invoke ..");
-        BeanInitialization beanInitialization = new BeanInitialization();
-        DebbieBeanInfo<SqlSessionFactory> sqlSessionFactoryBeanInfo = beanInitialization.getRegisteredBean(SqlSessionFactory.class);
-        SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBeanInfo.getBean();
-        DebbieBeanInfo<DataSourceFactory> dataSourceFactoryBeanInfo = beanInitialization.getRegisteredBean(DataSourceFactory.class);
-        DataSourceFactory dataSourceFactory = dataSourceFactoryBeanInfo.getBean();
+        SqlSessionFactory sqlSessionFactory = beanInitialization.getRegisterBean(SqlSessionFactory.class);
+        DataSourceFactory dataSourceFactory = beanInitialization.getRegisterBean(DataSourceFactory.class);
         transactionInfo.setConnection(dataSourceFactory.getConnection());
 
         if (jdbcTransactional == null && classJdbcTransactional == null) {
             throw new MethodNoJdbcTransactionalException();
         } else if (jdbcTransactional == null && !classJdbcTransactional.readonly()) {
             transactionInfo.setAutoCommit(false);
+            autoCommit = false;
         } else if (jdbcTransactional != null && !jdbcTransactional.readonly()) {
             transactionInfo.setAutoCommit(false);
+            autoCommit = false;
         } else {
             transactionInfo.setAutoCommit(true);
+            autoCommit = true;
         }
         SqlSession session = sqlSessionFactory.openSession(transactionInfo.getConnection());
         transactionInfo.setSession(session);
@@ -85,22 +96,25 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
     @Override
     public void after() {
         LOGGER.debug("running after method (" + transactionInfo.getMethod() + ") invoke ..");
-        transactionInfo.commit();
+        if (!autoCommit)
+            transactionInfo.commit();
     }
 
     @Override
     public void whenExceptionCatched(Throwable e) throws Throwable {
         LOGGER.debug("running when method (" + transactionInfo.getMethod() + ") invoke throw exception and catched ..");
-        if (jdbcTransactional.forceCommit()) {
-            LOGGER.debug("force commit ..");
-            transactionInfo.commit();
-        } else {
-            if (jdbcTransactional.rollbackFor().isInstance(e)) {
-                transactionInfo.rollback();
-                LOGGER.debug("rollback ..");
-            } else {
-                LOGGER.debug("not rollback for this exception(" + e.getClass().getName() + "), it committed");
+        if (!autoCommit) {
+            if (jdbcTransactional.forceCommit()) {
+                LOGGER.debug("force commit ..");
                 transactionInfo.commit();
+            } else {
+                if (jdbcTransactional.rollbackFor().isInstance(e)) {
+                    transactionInfo.rollback();
+                    LOGGER.debug("rollback ..");
+                } else {
+                    LOGGER.debug("not rollback for this exception(" + e.getClass().getName() + "), it committed");
+                    transactionInfo.commit();
+                }
             }
         }
         throw e;
@@ -108,7 +122,7 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
 
     @Override
     public void finallyRun() {
-        LOGGER.debug("running when method (" + transactionInfo.getMethod() + ") invoke throw exception and run to finally ..");
+        LOGGER.debug("running when method (" + transactionInfo.getMethod() + ") invoked and run to finally ..");
         transactionInfo.close();
         TransactionManager.remove();
     }

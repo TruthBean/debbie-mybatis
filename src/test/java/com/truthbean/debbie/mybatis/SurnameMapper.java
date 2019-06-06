@@ -1,6 +1,6 @@
 package com.truthbean.debbie.mybatis;
 
-import com.truthbean.debbie.core.bean.BeanComponent;
+import com.truthbean.debbie.bean.BeanComponent;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,4 +15,6 @@ public interface SurnameMapper {
     List<Surname> selectAll();
 
     int update(Surname surname);
+
+    long insert(Surname surname);
 }

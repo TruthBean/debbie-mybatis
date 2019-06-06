@@ -1,6 +1,6 @@
 package com.truthbean.debbie.mybatis.configuration;
 
-import com.truthbean.debbie.core.properties.DebbieConfiguration;
+import com.truthbean.debbie.properties.DebbieConfiguration;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;

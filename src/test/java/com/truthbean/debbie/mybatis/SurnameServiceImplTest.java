@@ -1,10 +1,7 @@
 package com.truthbean.debbie.mybatis;
 
-import com.truthbean.debbie.core.bean.BeanFactoryHandler;
-import com.truthbean.debbie.core.bean.BeanInitialization;
-import com.truthbean.debbie.mybatis.annotation.MappedBeanRegister;
+import com.truthbean.debbie.boot.DebbieApplicationFactory;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
@@ -21,21 +18,35 @@ import java.util.Optional;
 class SurnameServiceImplTest {
 
     private static SurnameService surnameService;
-    private static BeanFactoryHandler beanFactoryHandler;
+    private static DebbieApplicationFactory beanFactoryHandler;
 
     static {
-        BeanInitialization initialization = new BeanInitialization();
-        initialization.init("com.truthbean.debbie.mybatis");
-
-        beanFactoryHandler = new BeanFactoryHandler();
-
-        MappedBeanRegister register = new MappedBeanRegister();
-        register.register(beanFactoryHandler);
+        beanFactoryHandler = new DebbieApplicationFactory();
+        beanFactoryHandler.config();
+        beanFactoryHandler.callStarter();
     }
 
     @BeforeAll
     static void setUp() {
         surnameService = beanFactoryHandler.factory("surnameService");
+    }
+
+    @Test
+    void insert() {
+        var q = new Surname();
+        q.setBegin(new Timestamp(System.currentTimeMillis() - 24 * 60 * 60 * 1000));
+        q.setOrigin("");
+        q.setWebsite("https://www.zhou.org");
+        q.setName("周");
+        var b = surnameService.insert(q);
+        System.out.println(b);
+        System.out.println(q);
+
+        List<Surname> surnames = surnameService.selectAll();
+        System.out.println(surnames);
+        System.out.println("-----------------------------------------------------");
+        surnames = surnameService.selectAll();
+        System.out.println(surnames);
     }
 
     @Test
@@ -60,6 +71,9 @@ class SurnameServiceImplTest {
     @Test
     void selectAll() {
         List<Surname> surnames = surnameService.selectAll();
+        System.out.println(surnames);
+        System.out.println("-----------------------------------------------------");
+        surnames = surnameService.selectAll();
         System.out.println(surnames);
     }
 

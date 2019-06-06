@@ -5,6 +5,8 @@ import java.util.Optional;
 
 public interface SurnameService {
 
+    boolean insert(Surname surname);
+
     /**
      *  test force commit and rollbackFor is not instanceOf this exception
      * @param surname params

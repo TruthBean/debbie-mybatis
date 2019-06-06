@@ -1,19 +1,15 @@
 package com.truthbean.debbie.mybatis.annotation;
 
-import com.truthbean.debbie.core.bean.BeanFactoryHandler;
-import com.truthbean.debbie.core.bean.BeanInitialization;
-import com.truthbean.debbie.core.bean.BeanScanConfiguration;
-import com.truthbean.debbie.core.bean.DebbieBeanInfo;
-import com.truthbean.debbie.core.properties.ClassesScanProperties;
+import com.truthbean.debbie.bean.BeanFactoryHandler;
+import com.truthbean.debbie.bean.BeanInitialization;
+import com.truthbean.debbie.bean.DebbieBeanInfo;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactoryBeanRegister;
 import com.truthbean.debbie.mybatis.DebbieMapperFactory;
 import com.truthbean.debbie.mybatis.SqlSessionFactoryHandler;
+import com.truthbean.debbie.properties.DebbieConfigurationFactory;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.type.MappedJdbcTypes;
-import org.apache.ibatis.type.MappedTypes;
 
-import java.lang.annotation.Annotation;
 import java.util.Set;
 
 /**
@@ -21,12 +17,31 @@ import java.util.Set;
  * @since 0.0.2
  * Created on 2019/06/02 18:27.
  */
-public class MappedBeanRegister {
+public class MappedBeanRegister extends DataSourceFactoryBeanRegister {
 
-    public void register(BeanFactoryHandler beanFactoryHandler) {
-        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(beanFactoryHandler);
+    private SqlSessionFactoryHandler sqlSessionFactoryHandler;
+    private BeanInitialization beanInitialization;
+    private BeanFactoryHandler beanFactoryHandler;
 
-        BeanInitialization initialization = new BeanInitialization();
+    public MappedBeanRegister(DebbieConfigurationFactory configurationFactory, BeanFactoryHandler beanFactoryHandler) {
+        super(configurationFactory, beanFactoryHandler);
+        this.beanFactoryHandler = beanFactoryHandler;
+        sqlSessionFactoryHandler = new SqlSessionFactoryHandler(configurationFactory, beanFactoryHandler);
+        beanInitialization = beanFactoryHandler.getBeanInitialization();
+    }
+
+    public void registerMapper() {
+        Set<DebbieBeanInfo> annotatedClass = beanInitialization.getAnnotatedClass(Mapper.class);
+        if (annotatedClass != null && !annotatedClass.isEmpty()) {
+            for (DebbieBeanInfo<?> mapperBean : annotatedClass) {
+                mapperBean.setBeanFactory(new DebbieMapperFactory<>(mapperBean.getBeanClass(), sqlSessionFactoryHandler));
+                beanInitialization.refreshBean(mapperBean);
+                beanFactoryHandler.refreshBeans();
+            }
+        }
+    }
+
+    /*public void register() {
         BeanScanConfiguration configuration = ClassesScanProperties.toConfiguration();
         Set<Class<?>> targetClasses = configuration.getTargetClasses();
         if (targetClasses != null && !targetClasses.isEmpty()) {
@@ -38,31 +53,29 @@ public class MappedBeanRegister {
                         var type = annotation.annotationType();
                         if (type == Mapper.class) {
                             DebbieBeanInfo beanInfo = new DebbieBeanInfo<>(targetClass);
-                            beanInfo.setBeanFactory(new DebbieMapperFactory<>(targetClass, handler));
-                            initialization.init(beanInfo);
+                            beanInfo.setBeanFactory(new DebbieMapperFactory<>(targetClass, sqlSessionFactoryHandler));
+                            beanInitialization.init(beanInfo);
                             beanFactoryHandler.refreshBeans();
                             register = true;
                             break;
                         } else if (type == MappedJdbcTypes.class || type == MappedTypes.class) {
                             DebbieBeanInfo beanInfo = new DebbieBeanInfo<>(targetClass);
-                            initialization.init(beanInfo);
+                            beanInitialization.init(beanInfo);
                             beanFactoryHandler.refreshBeans();
                             register = true;
                             break;
                         }
                     }
                     if (!register) {
-                        initialization.init(targetClass);
+                        beanInitialization.init(targetClass);
                         beanFactoryHandler.refreshBeans();
                     }
                 }
             }
         }
+    }*/
 
-        DebbieBeanInfo beanInfo = new DebbieBeanInfo<>(SqlSessionFactory.class);
-        beanInfo.setBean(handler.buildSqlSessionFactory());
-        initialization.init(beanInfo);
-        DataSourceFactoryBeanRegister.register(beanFactoryHandler, initialization);
-        beanFactoryHandler.refreshBeans();
+    public void registerSqlSessionFactory() {
+        registerSingletonBean(sqlSessionFactoryHandler.buildSqlSessionFactory(), SqlSessionFactory.class, "sqlSessionFactory");
     }
 }

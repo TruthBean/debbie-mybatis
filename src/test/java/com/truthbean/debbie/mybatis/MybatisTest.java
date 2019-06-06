@@ -1,9 +1,12 @@
 package com.truthbean.debbie.mybatis;
 
-import com.truthbean.debbie.core.bean.BeanFactoryHandler;
-import com.truthbean.debbie.core.bean.BeanInitialization;
-import com.truthbean.debbie.core.bean.BeanScanConfiguration;
-import com.truthbean.debbie.core.properties.ClassesScanProperties;
+import com.truthbean.debbie.bean.BeanFactoryHandler;
+import com.truthbean.debbie.bean.BeanInitialization;
+import com.truthbean.debbie.bean.BeanScanConfiguration;
+import com.truthbean.debbie.boot.DebbieApplicationFactory;
+import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
+import com.truthbean.debbie.properties.ClassesScanProperties;
+import com.truthbean.debbie.properties.DebbieConfigurationFactory;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,18 +20,20 @@ import java.time.LocalDateTime;
 public class MybatisTest {
 
     private static BeanFactoryHandler beanFactoryHandler;
+    private static DebbieConfigurationFactory configurationFactory;
 
     @BeforeAll
     static void before() {
-        BeanInitialization initialization = new BeanInitialization();
-        BeanScanConfiguration configuration = ClassesScanProperties.toConfiguration();
-        initialization.init(configuration.getTargetClasses());
-        beanFactoryHandler = new BeanFactoryHandler();
+        DebbieApplicationFactory beanFactoryHandler = new DebbieApplicationFactory();
+        beanFactoryHandler.config();
+        beanFactoryHandler.callStarter();
+        DataSourceFactory factory = DataSourceFactory.factory(beanFactoryHandler.getConfigurationFactory(), beanFactoryHandler);
+        configurationFactory = beanFactoryHandler.getConfigurationFactory();
     }
 
     @Test
     public void testSqlSessionFactory() throws IOException {
-        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(beanFactoryHandler);
+        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(configurationFactory, beanFactoryHandler);
         SqlSessionFactory sqlSessionFactory = handler.buildSqlSessionFactory();
 
         System.out.println(sqlSessionFactory);
@@ -36,7 +41,7 @@ public class MybatisTest {
 
     @Test
     public void testSelectOneSurname() throws IOException {
-        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(beanFactoryHandler);
+        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(configurationFactory, beanFactoryHandler);
         SqlSessionFactory sqlSessionFactory = handler.buildSqlSessionFactory();
 
         SqlSession session = sqlSessionFactory.openSession();
@@ -52,7 +57,7 @@ public class MybatisTest {
 
     @Test
     public void testDataTimeMapper() throws IOException {
-        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(beanFactoryHandler);
+        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(configurationFactory, beanFactoryHandler);
         SqlSessionFactory sqlSessionFactory = handler.buildSqlSessionFactory();
 
         SqlSession session = sqlSessionFactory.openSession();

@@ -1,6 +1,6 @@
 package com.truthbean.debbie.mybatis.annotation;
 
-import com.truthbean.debbie.core.bean.AnnotationRegister;
+import com.truthbean.debbie.bean.AnnotationRegister;
 import org.apache.ibatis.type.MappedTypes;
 
 /**

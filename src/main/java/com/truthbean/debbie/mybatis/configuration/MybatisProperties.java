@@ -1,9 +1,9 @@
 package com.truthbean.debbie.mybatis.configuration;
 
-import com.truthbean.debbie.core.bean.BeanFactory;
-import com.truthbean.debbie.core.bean.BeanFactoryHandler;
-import com.truthbean.debbie.core.bean.BeanInitialization;
-import com.truthbean.debbie.core.properties.BaseProperties;
+import com.truthbean.debbie.bean.BeanFactory;
+import com.truthbean.debbie.bean.BeanFactoryHandler;
+import com.truthbean.debbie.bean.BeanInitialization;
+import com.truthbean.debbie.properties.BaseProperties;
 
 /**
  * @author truthbean
@@ -21,7 +21,7 @@ public class MybatisProperties extends BaseProperties {
     private static MybatisProperties instance;
 
     public MybatisProperties(BeanFactoryHandler beanFactoryHandler) {
-        BeanInitialization initialization = new BeanInitialization();
+        BeanInitialization initialization = beanFactoryHandler.getBeanInitialization();
         initialization.init(MyBatisConfigurationSettings.class);
         configuration = new MybatisConfiguration();
 

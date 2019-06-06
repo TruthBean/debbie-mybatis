@@ -1,12 +1,12 @@
 package com.truthbean.debbie.mybatis.configuration;
 
-import com.truthbean.debbie.core.data.transformer.ClassInstanceTransformer;
-import com.truthbean.debbie.core.data.transformer.ClassTransformer;
-import com.truthbean.debbie.core.data.transformer.collection.SetStringTransformer;
-import com.truthbean.debbie.core.data.transformer.text.BooleanTransformer;
-import com.truthbean.debbie.core.data.transformer.text.IntegerTransformer;
-import com.truthbean.debbie.core.properties.BeanConfiguration;
-import com.truthbean.debbie.core.properties.PropertyInject;
+import com.truthbean.debbie.data.transformer.ClassInstanceTransformer;
+import com.truthbean.debbie.data.transformer.ClassTransformer;
+import com.truthbean.debbie.data.transformer.collection.SetStringTransformer;
+import com.truthbean.debbie.data.transformer.text.BooleanTransformer;
+import com.truthbean.debbie.data.transformer.text.IntegerTransformer;
+import com.truthbean.debbie.properties.PropertiesConfiguration;
+import com.truthbean.debbie.properties.PropertyInject;
 import com.truthbean.debbie.mybatis.configuration.transformer.*;
 import org.apache.ibatis.executor.loader.ProxyFactory;
 import org.apache.ibatis.executor.loader.javassist.JavassistProxyFactory;
@@ -29,7 +29,7 @@ import java.util.Set;
  * @author truthbean
  * @since 0.0.2
  */
-@BeanConfiguration(keyPrefix = "debbie.mybatis.settings.")
+@PropertiesConfiguration(keyPrefix = "debbie.mybatis.settings.")
 public class MyBatisConfigurationSettings {
 
     @PropertyInject(value = "cache-enabled", transformer = BooleanTransformer.class)

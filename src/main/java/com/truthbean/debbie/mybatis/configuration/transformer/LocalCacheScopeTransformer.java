@@ -1,6 +1,6 @@
 package com.truthbean.debbie.mybatis.configuration.transformer;
 
-import com.truthbean.debbie.core.data.transformer.DataTransformer;
+import com.truthbean.debbie.data.transformer.DataTransformer;
 import org.apache.ibatis.session.LocalCacheScope;
 
 /**

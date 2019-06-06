@@ -1,8 +1,11 @@
 package com.truthbean.debbie.mybatis.transaction;
 
+import com.truthbean.debbie.jdbc.transaction.TransactionManager;
 import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.transaction.TransactionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -22,6 +25,8 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
      */
     @Override
     public Transaction newTransaction(DataSource dataSource, TransactionIsolationLevel level, boolean autoCommit) {
+        LOGGER.debug("create MybatisTransactionInfo by dataSource ({}) with transactionIsolationLevel ({}) and autoCommit ({}) ",
+                dataSource, level, autoCommit);
         MybatisTransactionInfo transactionInfo = new MybatisTransactionInfo();
         try {
             transactionInfo.setConnection(dataSource.getConnection());
@@ -40,6 +45,7 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
      */
     @Override
     public Transaction newTransaction(Connection connection) {
+        LOGGER.debug("create MybatisTransactionInfo by connection {} ", connection);
         MybatisTransactionInfo transactionInfo = new MybatisTransactionInfo();
         transactionInfo.setConnection(connection);
         return transactionInfo;
@@ -52,5 +58,7 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
     public void setProperties(Properties props) {
         // not needed in this version
     }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DebbieManagedTransactionFactory.class);
 
 }
