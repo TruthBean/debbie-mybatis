@@ -1,6 +1,5 @@
 package com.truthbean.debbie.mybatis.configuration;
 
-import com.truthbean.debbie.bean.BeanFactory;
 import com.truthbean.debbie.bean.BeanFactoryHandler;
 import com.truthbean.debbie.bean.BeanInitialization;
 import com.truthbean.debbie.properties.BaseProperties;
@@ -23,6 +22,7 @@ public class MybatisProperties extends BaseProperties {
     public MybatisProperties(BeanFactoryHandler beanFactoryHandler) {
         BeanInitialization initialization = beanFactoryHandler.getBeanInitialization();
         initialization.init(MyBatisConfigurationSettings.class);
+        beanFactoryHandler.refreshBeans();
         configuration = new MybatisConfiguration();
 
         configuration.setMybatisConfigXmlLocation(getValue(MYBATIS_CONFIG_XML_LOCATION));
