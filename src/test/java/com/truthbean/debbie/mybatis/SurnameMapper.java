@@ -1,12 +1,10 @@
 package com.truthbean.debbie.mybatis;
 
-import com.truthbean.debbie.bean.BeanComponent;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-@BeanComponent
 @Mapper
 public interface SurnameMapper {
 

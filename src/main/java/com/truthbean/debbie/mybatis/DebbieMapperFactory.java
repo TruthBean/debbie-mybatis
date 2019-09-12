@@ -47,4 +47,9 @@ public class DebbieMapperFactory<Mapper> implements BeanFactory<Mapper> {
     public boolean isSingleton() {
         return true;
     }
+
+    @Override
+    public void destroy() {
+        // do nothing
+    }
 }

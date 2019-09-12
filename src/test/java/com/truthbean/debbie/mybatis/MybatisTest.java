@@ -27,7 +27,7 @@ public class MybatisTest {
         DebbieApplicationFactory beanFactoryHandler = new DebbieApplicationFactory();
         beanFactoryHandler.config();
         beanFactoryHandler.callStarter();
-        DataSourceFactory factory = DataSourceFactory.factory(beanFactoryHandler.getConfigurationFactory(), beanFactoryHandler);
+        DataSourceFactory dataSourceFactory = beanFactoryHandler.factory("dataSourceFactory");
         configurationFactory = beanFactoryHandler.getConfigurationFactory();
     }
 
@@ -60,14 +60,10 @@ public class MybatisTest {
         SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(configurationFactory, beanFactoryHandler);
         SqlSessionFactory sqlSessionFactory = handler.buildSqlSessionFactory();
 
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             DateTimeMapper mapper = session.getMapper(DateTimeMapper.class);
             LocalDateTime localDateTime = mapper.now();
             System.out.println(localDateTime);
-
-        } finally {
-            session.close();
         }
     }
 

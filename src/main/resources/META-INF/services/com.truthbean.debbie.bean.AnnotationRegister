@@ -1,4 +1,0 @@
-com.truthbean.debbie.mybatis.annotation.MapperRegister
-com.truthbean.debbie.mybatis.annotation.AliasRegister
-com.truthbean.debbie.mybatis.annotation.MappedJdbcTypesRegister
-com.truthbean.debbie.mybatis.annotation.MappedTypesRegister

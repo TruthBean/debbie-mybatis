@@ -28,7 +28,6 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
 
     private int order;
 
-    private BeanFactoryHandler beanFactoryHandler;
     private BeanInitialization beanInitialization;
 
     private boolean autoCommit;
@@ -65,7 +64,6 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
 
     @Override
     public void setBeanFactoryHandler(BeanFactoryHandler beanFactoryHandler) {
-        this.beanFactoryHandler = beanFactoryHandler;
         beanInitialization = beanFactoryHandler.getBeanInitialization();
     }
 
@@ -81,9 +79,13 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
         } else if (jdbcTransactional == null && !classJdbcTransactional.readonly()) {
             transactionInfo.setAutoCommit(false);
             autoCommit = false;
+            transactionInfo.setForceCommit(classJdbcTransactional.forceCommit());
+            transactionInfo.setRollbackFor(classJdbcTransactional.rollbackFor());
         } else if (jdbcTransactional != null && !jdbcTransactional.readonly()) {
             transactionInfo.setAutoCommit(false);
             autoCommit = false;
+            transactionInfo.setForceCommit(jdbcTransactional.forceCommit());
+            transactionInfo.setRollbackFor(jdbcTransactional.rollbackFor());
         } else {
             transactionInfo.setAutoCommit(true);
             autoCommit = true;
@@ -104,11 +106,11 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
     public void whenExceptionCatched(Throwable e) throws Throwable {
         LOGGER.debug("running when method (" + transactionInfo.getMethod() + ") invoke throw exception and catched ..");
         if (!autoCommit) {
-            if (jdbcTransactional.forceCommit()) {
+            if (transactionInfo.isForceCommit()) {
                 LOGGER.debug("force commit ..");
                 transactionInfo.commit();
             } else {
-                if (jdbcTransactional.rollbackFor().isInstance(e)) {
+                if (transactionInfo.getRollbackFor().isInstance(e)) {
                     transactionInfo.rollback();
                     LOGGER.debug("rollback ..");
                 } else {

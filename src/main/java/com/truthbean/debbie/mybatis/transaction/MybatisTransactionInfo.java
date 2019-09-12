@@ -25,7 +25,7 @@ public class MybatisTransactionInfo extends TransactionInfo implements Transacti
     @Override
     public void commit() {
         if (session != null) {
-            session.commit();
+            session.commit(true);
         } else {
             super.commit();
         }
@@ -34,7 +34,7 @@ public class MybatisTransactionInfo extends TransactionInfo implements Transacti
     @Override
     public void rollback() {
         if (session != null) {
-            session.rollback();
+            session.rollback(true);
         } else {
             super.rollback();
         }

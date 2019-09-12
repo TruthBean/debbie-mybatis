@@ -4,6 +4,7 @@ import com.truthbean.debbie.bean.BeanFactoryHandler;
 import com.truthbean.debbie.bean.BeanInitialization;
 import com.truthbean.debbie.bean.DebbieBeanInfo;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
+import com.truthbean.debbie.jdbc.datasource.DataSourceFactoryBeanRegister;
 import com.truthbean.debbie.mybatis.configuration.MybatisConfiguration;
 import com.truthbean.debbie.mybatis.configuration.MybatisProperties;
 import com.truthbean.debbie.mybatis.transaction.DebbieManagedTransactionFactory;
@@ -85,12 +86,10 @@ public class SqlSessionFactoryHandler {
     private DataSourceFactory getDataSourceFactoryOrInitIfNull(DebbieConfigurationFactory configurationFactory) {
         DataSourceFactory dataSourceFactory = beanInitialization.getRegisterBean(DataSourceFactory.class);
         if (dataSourceFactory == null) {
-            dataSourceFactory = DataSourceFactory.factory(configurationFactory, beanFactoryHandler);
-            DebbieBeanInfo beanInfo = new DebbieBeanInfo<>(DataSourceFactory.class);
-            beanInfo.setBeanName("dataSourceFactory");
-            beanInfo.setBean(dataSourceFactory);
-            beanInitialization.initSingletonBean(beanInfo);
+            var register = new DataSourceFactoryBeanRegister(configurationFactory, beanFactoryHandler);
+            register.registerDataSourceFactory();
             beanFactoryHandler.refreshBeans();
+            dataSourceFactory = beanInitialization.getRegisterBean(DataSourceFactory.class);
         }
         return dataSourceFactory;
     }
