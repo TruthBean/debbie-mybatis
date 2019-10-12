@@ -123,7 +123,7 @@ public class SqlSessionFactoryHandler {
             }
         }
 
-        Set<DebbieBeanInfo> alias = beanInitialization.getAnnotatedClass(Alias.class);
+        Set<DebbieBeanInfo<?>> alias = beanInitialization.getAnnotatedClass(Alias.class);
         TypeAliasRegistry typeAliasRegistry = configuration.getTypeAliasRegistry();
         if (alias != null && !alias.isEmpty()) {
             for (DebbieBeanInfo typeAlias : alias) {
@@ -143,11 +143,11 @@ public class SqlSessionFactoryHandler {
         }
 
         Set<DebbieBeanInfo> mapped = new HashSet<>();
-        Set<DebbieBeanInfo> mappedTypes = beanInitialization.getAnnotatedClass(MappedTypes.class);
+        Set<DebbieBeanInfo<?>> mappedTypes = beanInitialization.getAnnotatedClass(MappedTypes.class);
         if (mappedTypes != null && !mappedTypes.isEmpty()) {
             mapped.addAll(mappedTypes);
         }
-        Set<DebbieBeanInfo> mappedJdbcTypes = beanInitialization.getAnnotatedClass(MappedJdbcTypes.class);
+        Set<DebbieBeanInfo<?>> mappedJdbcTypes = beanInitialization.getAnnotatedClass(MappedJdbcTypes.class);
         if (mappedJdbcTypes != null && !mappedJdbcTypes.isEmpty()) {
             mapped.addAll(mappedJdbcTypes);
         }
@@ -172,7 +172,7 @@ public class SqlSessionFactoryHandler {
             configuration.addCache(cache);
         }
 
-        Set<DebbieBeanInfo> mappers = beanInitialization.getAnnotatedClass(Mapper.class);
+        Set<DebbieBeanInfo<?>> mappers = beanInitialization.getAnnotatedClass(Mapper.class);
         if (mappers != null && !mappers.isEmpty()) {
             for (DebbieBeanInfo mapper : mappers) {
                 Class<?> mapperClass = mapper.getBeanClass();

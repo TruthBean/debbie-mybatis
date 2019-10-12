@@ -31,7 +31,7 @@ public class MappedBeanRegister extends DataSourceFactoryBeanRegister {
     }
 
     public void registerMapper() {
-        Set<DebbieBeanInfo> annotatedClass = beanInitialization.getAnnotatedClass(Mapper.class);
+        Set<DebbieBeanInfo<?>> annotatedClass = beanInitialization.getAnnotatedClass(Mapper.class);
         if (annotatedClass != null && !annotatedClass.isEmpty()) {
             for (DebbieBeanInfo<?> mapperBean : annotatedClass) {
                 mapperBean.setBeanFactory(new DebbieMapperFactory<>(mapperBean.getBeanClass(), sqlSessionFactoryHandler));
