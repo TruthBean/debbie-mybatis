@@ -47,4 +47,9 @@ public class MybatisModuleStarter implements DebbieModuleStarter {
         register.registerMapper();
         register.registerSqlSessionFactory();
     }
+
+    @Override
+    public int getOrder() {
+        return 51;
+    }
 }
