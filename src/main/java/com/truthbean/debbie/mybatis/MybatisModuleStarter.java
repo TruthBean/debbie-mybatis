@@ -4,10 +4,14 @@ import com.truthbean.debbie.bean.BeanFactoryHandler;
 import com.truthbean.debbie.bean.BeanInitialization;
 import com.truthbean.debbie.bean.SingletonBeanRegister;
 import com.truthbean.debbie.boot.DebbieModuleStarter;
+import com.truthbean.debbie.jdbc.annotation.JdbcTransactional;
+import com.truthbean.debbie.jdbc.transaction.TransactionalMethodProxyHandler;
 import com.truthbean.debbie.mybatis.annotation.*;
 import com.truthbean.debbie.mybatis.configuration.MyBatisConfigurationSettings;
 import com.truthbean.debbie.mybatis.configuration.transformer.*;
+import com.truthbean.debbie.mybatis.transaction.MybatisTransactionalHandler;
 import com.truthbean.debbie.properties.DebbieConfigurationFactory;
+import com.truthbean.debbie.proxy.MethodProxyHandlerRegister;
 import org.apache.ibatis.session.AutoMappingBehavior;
 import org.apache.ibatis.session.AutoMappingUnknownColumnBehavior;
 import org.apache.ibatis.session.ExecutorType;
@@ -31,6 +35,9 @@ public class MybatisModuleStarter implements DebbieModuleStarter {
         beanInitialization.addAnnotationRegister(new AliasRegister());
         beanInitialization.addAnnotationRegister(new MappedJdbcTypesRegister());
         beanInitialization.addAnnotationRegister(new MappedTypesRegister());
+
+        // MethodProxyHandlerRegister methodProxyHandlerRegister = beanFactoryHandler.getMethodProxyHandlerRegister();
+        // methodProxyHandlerRegister.register(JdbcTransactional.class, MybatisTransactionalHandler.class);
     }
 
     private void registerTransformer(BeanInitialization beanInitialization) {
@@ -51,5 +58,10 @@ public class MybatisModuleStarter implements DebbieModuleStarter {
     @Override
     public int getOrder() {
         return 51;
+    }
+
+    @Override
+    public void release() {
+
     }
 }

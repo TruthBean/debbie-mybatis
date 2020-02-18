@@ -2,6 +2,7 @@ package com.truthbean.debbie.mybatis;
 
 import com.truthbean.debbie.bean.BeanInject;
 import com.truthbean.debbie.test.DebbieApplicationExtension;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -13,22 +14,38 @@ import java.util.Optional;
 @ExtendWith({DebbieApplicationExtension.class})
 class SurnameServiceTest {
 
+    @BeforeAll
+    static void before() {
+        System.setProperty("redis.properties.filename", "application.properties");
+    }
+
     @Test
     void insert(@BeanInject SurnameService surnameService) {
         var q = new Surname();
         q.setBegin(new Timestamp(System.currentTimeMillis() - 24 * 60 * 60 * 1000));
         q.setOrigin("");
-        q.setWebsite("https://www.zhou.org");
-        q.setName("周");
+        q.setWebsite("https://www.qu.org");
+        q.setName("屈");
         var b = surnameService.insert(q);
         System.out.println(b);
         System.out.println(q);
 
-        List<Surname> surnames = surnameService.selectAll();
+        System.out.println("------------------------------------");
+
+        var z = new Surname();
+        z.setBegin(new Timestamp(System.currentTimeMillis() - 24 * 60 * 60 * 1000));
+        z.setOrigin("");
+        z.setWebsite("https://www.zhao.org");
+        z.setName("赵");
+        var bz = surnameService.insert(z);
+        System.out.println(bz);
+        System.out.println(z);
+
+        /*List<Surname> surnames = surnameService.selectAll();
         System.out.println(surnames);
         System.out.println("-----------------------------------------------------");
         surnames = surnameService.selectAll();
-        System.out.println(surnames);
+        System.out.println(surnames);*/
     }
 
     @Test

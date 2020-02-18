@@ -3,7 +3,10 @@ package com.truthbean.debbie.mybatis;
 import com.truthbean.debbie.bean.BeanComponent;
 import com.truthbean.debbie.bean.BeanInject;
 import com.truthbean.debbie.jdbc.annotation.JdbcTransactional;
+import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
+import com.truthbean.debbie.jdbc.transaction.TransactionInfo;
 import com.truthbean.debbie.jdbc.transaction.TransactionService;
+import com.truthbean.debbie.mybatis.transaction.MybatisTransactionInfo;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -20,11 +23,21 @@ public class SurnameServiceImpl implements SurnameService, TransactionService {
     @BeanInject
     private SurnameMapper surnameMapper;
 
+    @BeanInject
+    private SurnameRepository surnameRepository;
+
     @JdbcTransactional(rollbackFor = ArithmeticException.class, forceCommit = false, readonly = false)
     public boolean insert(Surname surname) {
-        /*SqlSession sqlSession = getSqlSession();
-        var surnameMapper = sqlSession.getMapper(SurnameMapper.class);*/
+        TransactionInfo transaction = getTransaction();
+        /*SurnameMapper surnameMapper = this.surnameMapper;
+        if (transaction instanceof MybatisTransactionInfo) {
+            MybatisTransactionInfo transactionInfo = (MybatisTransactionInfo) transaction;
+            SqlSession sqlSession = transactionInfo.getSession();
+            surnameMapper = sqlSession.getMapper(SurnameMapper.class);
+        }*/
         long id = surnameMapper.insert(surname);
+        var all = surnameMapper.selectAll();
+        System.out.println(all);
         surname.setId(id);
         return id > 0L;
     }
@@ -52,13 +65,9 @@ public class SurnameServiceImpl implements SurnameService, TransactionService {
 
     @Override
     public List<Surname> selectAll() {
-        /*SqlSession sqlSession = sqlSessionFactory.openSession(getConnection());
-        var surnameMapper = sqlSession.getMapper(SurnameMapper.class);
-        return surnameMapper.selectAll();*/
-
-        /*var result = surnameMapper.selectAll();
-        System.out.println(result);
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");*/
+        surnameRepository.findAll();
+        // SqlSession sqlSession = sqlSessionFactory.openSession(getConnection());
+        // var surnameMapper = sqlSession.getMapper(SurnameMapper.class);
         return surnameMapper.selectAll();
     }
 

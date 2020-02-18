@@ -2,7 +2,7 @@ package com.truthbean.debbie.mybatis.transaction;
 
 import com.truthbean.debbie.bean.BeanFactoryHandler;
 import com.truthbean.debbie.bean.BeanInitialization;
-import com.truthbean.debbie.bean.DebbieBeanInfo;
+import com.truthbean.debbie.jdbc.transaction.TransactionInfo;
 import com.truthbean.debbie.proxy.MethodProxyHandler;
 import com.truthbean.debbie.jdbc.annotation.JdbcTransactional;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
  * @since 0.0.2
  */
 public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTransactional> {
-    private final MybatisTransactionInfo transactionInfo = new MybatisTransactionInfo();
+    private final MybatisTransactionInfo transactionInfo;
 
     private JdbcTransactional jdbcTransactional;
     private JdbcTransactional classJdbcTransactional;
@@ -31,6 +31,10 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
     private BeanInitialization beanInitialization;
 
     private boolean autoCommit;
+
+    public MybatisTransactionalHandler() {
+        this.transactionInfo = new MybatisTransactionInfo();
+    }
 
     @Override
     public int getOrder() {
@@ -71,8 +75,21 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
     public void before() {
         LOGGER.debug("running before method (" + transactionInfo.getMethod() + ") invoke ..");
         SqlSessionFactory sqlSessionFactory = beanInitialization.getRegisterBean(SqlSessionFactory.class);
-        DataSourceFactory dataSourceFactory = beanInitialization.getRegisterBean(DataSourceFactory.class);
-        transactionInfo.setConnection(dataSourceFactory.getConnection());
+
+        TransactionInfo peek = null;
+        try {
+            peek = TransactionManager.peek();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (peek == null) {
+            DataSourceFactory dataSourceFactory = beanInitialization.getRegisterBean(DataSourceFactory.class);
+            // 创建mapper的connection与事务的connection不是同一个
+            transactionInfo.setConnection(dataSourceFactory.getConnection());
+        } else {
+            transactionInfo.setConnection(peek.getConnection());
+            TransactionManager.remove();
+        }
 
         if (jdbcTransactional == null && classJdbcTransactional == null) {
             throw new MethodNoJdbcTransactionalException();
@@ -90,8 +107,8 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
             transactionInfo.setAutoCommit(true);
             autoCommit = true;
         }
-        SqlSession session = sqlSessionFactory.openSession(transactionInfo.getConnection());
-        transactionInfo.setSession(session);
+        // SqlSession session = sqlSessionFactory.openSession(transactionInfo.getConnection());
+        // transactionInfo.setSession(session);
         TransactionManager.offer(transactionInfo);
     }
 
@@ -103,7 +120,7 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
     }
 
     @Override
-    public void whenExceptionCatched(Throwable e) throws Throwable {
+    public void catchException(Throwable e) throws Throwable {
         LOGGER.debug("running when method (" + transactionInfo.getMethod() + ") invoke throw exception and catched ..");
         if (!autoCommit) {
             if (transactionInfo.isForceCommit()) {

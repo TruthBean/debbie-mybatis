@@ -14,8 +14,8 @@ public interface SqlSessionService {
         return TransactionManager.peek();
     }
 
-    default SqlSession getSqlSession() {
+    /*default SqlSession getSqlSession() {
         MybatisTransactionInfo transactionInfo = (MybatisTransactionInfo) TransactionManager.peek();
         return transactionInfo.getSession();
-    }
+    }*/
 }

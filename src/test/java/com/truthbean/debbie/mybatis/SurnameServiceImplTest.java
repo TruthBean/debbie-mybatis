@@ -1,6 +1,7 @@
 package com.truthbean.debbie.mybatis;
 
 import com.truthbean.debbie.boot.DebbieApplicationFactory;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,8 @@ class SurnameServiceImplTest {
     private static DebbieApplicationFactory beanFactoryHandler;
 
     static {
-        beanFactoryHandler = new DebbieApplicationFactory();
+        ClassLoader classLoader = SurnameServiceImplTest.class.getClassLoader();
+        beanFactoryHandler = new DebbieApplicationFactory(classLoader);
         beanFactoryHandler.config();
         beanFactoryHandler.callStarter();
     }
@@ -29,6 +31,11 @@ class SurnameServiceImplTest {
     @BeforeAll
     static void setUp() {
         surnameService = beanFactoryHandler.factory("surnameService");
+    }
+
+    @AfterAll
+    static void after() {
+        beanFactoryHandler.release();
     }
 
     @Test

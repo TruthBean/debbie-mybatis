@@ -1,6 +1,7 @@
 package com.truthbean.debbie.mybatis.transaction;
 
 import com.truthbean.debbie.jdbc.transaction.TransactionManager;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.transaction.TransactionFactory;
@@ -29,7 +30,9 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
                 dataSource, level, autoCommit);
         MybatisTransactionInfo transactionInfo = new MybatisTransactionInfo();
         try {
-            transactionInfo.setConnection(dataSource.getConnection());
+            Connection connection = dataSource.getConnection();
+            LOGGER.debug("connection ({}) created by dataSource", connection);
+            transactionInfo.setConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -37,6 +40,7 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
             transactionInfo.setTransactionIsolation(level.getLevel());
         }
         transactionInfo.setAutoCommit(autoCommit);
+        TransactionManager.offer(transactionInfo);
         return transactionInfo;
     }
 
@@ -48,7 +52,9 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
         LOGGER.debug("create MybatisTransactionInfo by connection {} ", connection);
         MybatisTransactionInfo transactionInfo = new MybatisTransactionInfo();
         transactionInfo.setConnection(connection);
+        TransactionManager.offer(transactionInfo);
         return transactionInfo;
+        // throw new UnsupportedOperationException("New Debbie transactions require a DataSource");
     }
 
     /**

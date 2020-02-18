@@ -24,11 +24,13 @@ public class MybatisTest {
 
     @BeforeAll
     static void before() {
-        DebbieApplicationFactory beanFactoryHandler = new DebbieApplicationFactory();
+        ClassLoader classLoader = MybatisTest.class.getClassLoader();
+        DebbieApplicationFactory beanFactoryHandler = new DebbieApplicationFactory(classLoader);
         beanFactoryHandler.config();
         beanFactoryHandler.callStarter();
         DataSourceFactory dataSourceFactory = beanFactoryHandler.factory("dataSourceFactory");
         configurationFactory = beanFactoryHandler.getConfigurationFactory();
+        MybatisTest.beanFactoryHandler = beanFactoryHandler;
     }
 
     @Test
@@ -44,14 +46,10 @@ public class MybatisTest {
         SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(configurationFactory, beanFactoryHandler);
         SqlSessionFactory sqlSessionFactory = handler.buildSqlSessionFactory();
 
-        SqlSession session = sqlSessionFactory.openSession();
-        try {
+        try (SqlSession session = sqlSessionFactory.openSession()) {
             SurnameMapper mapper = session.getMapper(SurnameMapper.class);
             Surname surname = mapper.selectOne(1L);
             System.out.println(surname);
-
-        } finally {
-            session.close();
         }
     }
 
