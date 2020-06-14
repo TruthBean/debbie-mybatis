@@ -19,9 +19,9 @@ import java.util.Set;
  */
 public class MappedBeanRegister extends DataSourceFactoryBeanRegister {
 
-    private SqlSessionFactoryHandler sqlSessionFactoryHandler;
-    private BeanInitialization beanInitialization;
-    private BeanFactoryHandler beanFactoryHandler;
+    private final SqlSessionFactoryHandler sqlSessionFactoryHandler;
+    private final BeanInitialization beanInitialization;
+    private final BeanFactoryHandler beanFactoryHandler;
 
     public MappedBeanRegister(DebbieConfigurationFactory configurationFactory, BeanFactoryHandler beanFactoryHandler) {
         super(configurationFactory, beanFactoryHandler);
@@ -34,7 +34,9 @@ public class MappedBeanRegister extends DataSourceFactoryBeanRegister {
         Set<DebbieBeanInfo<?>> annotatedClass = beanInitialization.getAnnotatedClass(Mapper.class);
         if (annotatedClass != null && !annotatedClass.isEmpty()) {
             for (DebbieBeanInfo<?> mapperBean : annotatedClass) {
-                mapperBean.setBeanFactory(new DebbieMapperFactory<>(mapperBean.getBeanClass(), sqlSessionFactoryHandler));
+                DebbieMapperFactory mapperFactory = new DebbieMapperFactory<>(mapperBean.getBeanClass(), sqlSessionFactoryHandler);
+                mapperFactory.setBeanFactoryHandler(beanFactoryHandler);
+                mapperBean.setBeanFactory(mapperFactory);
                 beanInitialization.refreshBean(mapperBean);
                 beanFactoryHandler.refreshBeans();
             }

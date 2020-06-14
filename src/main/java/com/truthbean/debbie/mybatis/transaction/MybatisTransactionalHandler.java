@@ -83,11 +83,11 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
             e.printStackTrace();
         }
         if (peek == null) {
-            DataSourceFactory dataSourceFactory = beanInitialization.getRegisterBean(DataSourceFactory.class);
+            // DataSourceFactory dataSourceFactory = beanInitialization.getRegisterBean(DataSourceFactory.class);
             // 创建mapper的connection与事务的connection不是同一个
-            transactionInfo.setConnection(dataSourceFactory.getConnection());
+            // transactionInfo.setConnection(dataSourceFactory.getConnection());
         } else {
-            transactionInfo.setConnection(peek.getConnection());
+            transactionInfo.setConnection(peek.getDriverConnection());
             TransactionManager.remove();
         }
 

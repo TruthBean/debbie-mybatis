@@ -9,8 +9,11 @@ import com.truthbean.debbie.mybatis.configuration.MybatisConfiguration;
 import com.truthbean.debbie.mybatis.configuration.MybatisProperties;
 import com.truthbean.debbie.mybatis.transaction.DebbieManagedTransactionFactory;
 import com.truthbean.debbie.properties.DebbieConfigurationFactory;
+import com.truthbean.debbie.reflection.ClassLoaderUtils;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.builder.xml.XMLMapperBuilder;
 import org.apache.ibatis.cache.Cache;
+import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.mapping.Environment;
 import org.apache.ibatis.plugin.Interceptor;
@@ -29,9 +32,8 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.net.URL;
+import java.util.*;
 
 /**
  * @author truthbean
@@ -40,18 +42,18 @@ import java.util.Set;
 public class SqlSessionFactoryHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(SqlSessionFactoryHandler.class);
 
-    private MybatisConfiguration mybatisConfiguration;
+    private final MybatisConfiguration mybatisConfiguration;
 
     private Configuration configuration;
     private InputStream mybatisConfigXmlInputStream;
 
-    private BeanFactoryHandler beanFactoryHandler;
-    private BeanInitialization beanInitialization;
+    private final BeanFactoryHandler beanFactoryHandler;
+    private final BeanInitialization beanInitialization;
 
     public SqlSessionFactoryHandler(DebbieConfigurationFactory configurationFactory, BeanFactoryHandler beanFactoryHandler) {
         this.beanFactoryHandler = beanFactoryHandler;
-        beanInitialization = beanFactoryHandler.getBeanInitialization();
-        this.mybatisConfiguration = MybatisProperties.toConfiguration(beanFactoryHandler);
+        this.beanInitialization = beanFactoryHandler.getBeanInitialization();
+        this.mybatisConfiguration = new MybatisProperties(beanFactoryHandler).loadConfiguration();
         if (getMybatisConfigXmlInputStream() == null) {
             buildConfiguration(configurationFactory);
         }
@@ -97,7 +99,7 @@ public class SqlSessionFactoryHandler {
     private void buildConfiguration(DebbieConfigurationFactory configurationFactory) {
         DataSourceFactory dataSourceFactory = getDataSourceFactoryOrInitIfNull(configurationFactory);
         DataSource dataSource = dataSourceFactory.getDataSource();
-        TransactionFactory transactionFactory = new DebbieManagedTransactionFactory();
+        TransactionFactory transactionFactory = new DebbieManagedTransactionFactory(dataSourceFactory.getDriverName());
         Environment environment = new Environment(mybatisConfiguration.getEnvironment(), transactionFactory, dataSource);
         configuration = new Configuration(environment);
         mybatisConfiguration.getSettings().configTo(configuration);
@@ -126,10 +128,10 @@ public class SqlSessionFactoryHandler {
         Set<DebbieBeanInfo<?>> alias = beanInitialization.getAnnotatedClass(Alias.class);
         TypeAliasRegistry typeAliasRegistry = configuration.getTypeAliasRegistry();
         if (alias != null && !alias.isEmpty()) {
-            for (DebbieBeanInfo typeAlias : alias) {
+            for (DebbieBeanInfo<?> typeAlias : alias) {
                 var typeAliasClass = typeAlias.getBeanClass();
                 typeAliasRegistry.registerAlias(typeAliasClass);
-                LOGGER.debug("Registered type alias: '" + typeAliasClass + "'");
+                LOGGER.trace("Registered type alias: '" + typeAliasClass + "'");
             }
         }
 
@@ -142,7 +144,7 @@ public class SqlSessionFactoryHandler {
             }
         }
 
-        Set<DebbieBeanInfo> mapped = new HashSet<>();
+        Set<DebbieBeanInfo<?>> mapped = new HashSet<>();
         Set<DebbieBeanInfo<?>> mappedTypes = beanInitialization.getAnnotatedClass(MappedTypes.class);
         if (mappedTypes != null && !mappedTypes.isEmpty()) {
             mapped.addAll(mappedTypes);
@@ -152,10 +154,10 @@ public class SqlSessionFactoryHandler {
             mapped.addAll(mappedJdbcTypes);
         }
         if (!mapped.isEmpty()) {
-            for (DebbieBeanInfo mappedType : mapped) {
+            for (DebbieBeanInfo<?> mappedType : mapped) {
                 var mappedTypeClass = mappedType.getBeanClass();
                 typeHandlerRegistry.register(mappedTypeClass);
-                LOGGER.debug("Registered type handlers: '" + mappedTypeClass + "'");
+                LOGGER.trace("Registered type handlers: '" + mappedTypeClass + "'");
             }
         }
 
@@ -174,11 +176,34 @@ public class SqlSessionFactoryHandler {
 
         Set<DebbieBeanInfo<?>> mappers = beanInitialization.getAnnotatedClass(Mapper.class);
         if (mappers != null && !mappers.isEmpty()) {
-            for (DebbieBeanInfo mapper : mappers) {
+            for (DebbieBeanInfo<?> mapper : mappers) {
                 Class<?> mapperClass = mapper.getBeanClass();
                 configuration.addMapper(mapperClass);
-                LOGGER.debug("Registered type mapper: '" + mapperClass + "'");
+                LOGGER.trace("Registered type mapper: '" + mapperClass + "'");
             }
+        }
+
+        List<String> mapperLocations = mybatisConfiguration.getMapperLocations();
+        for (String mapperLocation : mapperLocations) {
+            if (mapperLocation == null) {
+                continue;
+            }
+            try {
+                Enumeration<URL> resources = ClassLoaderUtils.getDefaultClassLoader().getResources(mapperLocation);
+                if (resources != null) {
+                    while (resources.hasMoreElements()) {
+                        InputStream inputStream = resources.nextElement().openStream();
+                        XMLMapperBuilder xmlMapperBuilder = new XMLMapperBuilder(inputStream,
+                                configuration, mapperLocation, configuration.getSqlFragments());
+                        xmlMapperBuilder.parse();
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to parse mapping resource: '" + mapperLocation + "'", e);
+            } finally {
+                ErrorContext.instance().reset();
+            }
+            LOGGER.trace("Parsed mapper file: '" + mapperLocation + "'");
         }
     }
 

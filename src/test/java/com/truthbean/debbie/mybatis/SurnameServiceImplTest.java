@@ -22,10 +22,7 @@ class SurnameServiceImplTest {
     private static DebbieApplicationFactory beanFactoryHandler;
 
     static {
-        ClassLoader classLoader = SurnameServiceImplTest.class.getClassLoader();
-        beanFactoryHandler = new DebbieApplicationFactory(classLoader);
-        beanFactoryHandler.config();
-        beanFactoryHandler.callStarter();
+        beanFactoryHandler = DebbieApplicationFactory.configure(SurnameServiceImplTest.class);
     }
 
     @BeforeAll

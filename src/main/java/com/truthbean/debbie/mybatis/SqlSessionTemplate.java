@@ -348,7 +348,7 @@ public class SqlSessionTemplate implements SqlSession, BeanClosure {
      * }
      * </pre>
      * <p>
-     * The implementation of {@link BeanClosure} forces spring context to use {@link BeanClosure#destroy()} method
+     * The implementation of {@link BeanClosure} forces bean context to use {@link BeanClosure#destroy()} method
      * instead of {@link SqlSessionTemplate#close()} to shutdown gently.
      *
      * @see SqlSessionTemplate#close()
@@ -362,7 +362,7 @@ public class SqlSessionTemplate implements SqlSession, BeanClosure {
     }
 
     /**
-     * Proxy needed to route MyBatis method calls to the proper SqlSession got from Spring's Transaction Manager It also
+     * Proxy needed to route MyBatis method calls to the proper SqlSession got from Debbie's Transaction Manager It also
      * unwraps exceptions thrown by {@code Method#invoke(Object, Object...)} to pass a {@code PersistenceException} to the
      * {@code PersistenceExceptionTranslator}.
      */

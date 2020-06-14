@@ -1,5 +1,7 @@
 package com.truthbean.debbie.mybatis.transaction;
 
+import com.truthbean.debbie.jdbc.datasource.DataSourceDriverName;
+import com.truthbean.debbie.jdbc.datasource.DriverConnection;
 import com.truthbean.debbie.jdbc.transaction.TransactionManager;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
@@ -21,6 +23,12 @@ import java.util.Properties;
  */
 public class DebbieManagedTransactionFactory implements TransactionFactory {
 
+    private final DataSourceDriverName driverName;
+
+    public DebbieManagedTransactionFactory(DataSourceDriverName driverName) {
+        this.driverName = driverName;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -32,7 +40,10 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
         try {
             Connection connection = dataSource.getConnection();
             LOGGER.debug("connection ({}) created by dataSource", connection);
-            transactionInfo.setConnection(connection);
+            DriverConnection driverConnection = new DriverConnection();
+            driverConnection.setConnection(connection);
+            driverConnection.setDriverName(driverName);
+            transactionInfo.setConnection(driverConnection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -51,7 +62,10 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
     public Transaction newTransaction(Connection connection) {
         LOGGER.debug("create MybatisTransactionInfo by connection {} ", connection);
         MybatisTransactionInfo transactionInfo = new MybatisTransactionInfo();
-        transactionInfo.setConnection(connection);
+        DriverConnection driverConnection = new DriverConnection();
+        driverConnection.setConnection(connection);
+        driverConnection.setDriverName(driverName);
+        transactionInfo.setConnection(driverConnection);
         TransactionManager.offer(transactionInfo);
         return transactionInfo;
         // throw new UnsupportedOperationException("New Debbie transactions require a DataSource");

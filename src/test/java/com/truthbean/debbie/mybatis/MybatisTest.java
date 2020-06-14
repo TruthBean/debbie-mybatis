@@ -24,10 +24,7 @@ public class MybatisTest {
 
     @BeforeAll
     static void before() {
-        ClassLoader classLoader = MybatisTest.class.getClassLoader();
-        DebbieApplicationFactory beanFactoryHandler = new DebbieApplicationFactory(classLoader);
-        beanFactoryHandler.config();
-        beanFactoryHandler.callStarter();
+        DebbieApplicationFactory beanFactoryHandler = DebbieApplicationFactory.configure(MybatisTest.class);
         DataSourceFactory dataSourceFactory = beanFactoryHandler.factory("dataSourceFactory");
         configurationFactory = beanFactoryHandler.getConfigurationFactory();
         MybatisTest.beanFactoryHandler = beanFactoryHandler;
@@ -65,5 +62,4 @@ public class MybatisTest {
         }
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SqlSessionFactoryConfiguration.class);
 }

@@ -9,6 +9,7 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.type.TypeHandler;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,6 +18,8 @@ import java.util.Map;
  */
 public class MybatisConfiguration implements DebbieConfiguration {
     private String mybatisConfigXmlLocation;
+
+    private List<String> mapperLocations;
 
     private Map<String, String> configurationProperties;
 
@@ -39,6 +42,14 @@ public class MybatisConfiguration implements DebbieConfiguration {
 
     public void setMybatisConfigXmlLocation(String mybatisConfigXmlLocation) {
         this.mybatisConfigXmlLocation = mybatisConfigXmlLocation;
+    }
+
+    public List<String> getMapperLocations() {
+        return mapperLocations;
+    }
+
+    public void setMapperLocations(List<String> mapperLocations) {
+        this.mapperLocations = mapperLocations;
     }
 
     public String getEnvironment() {
@@ -119,5 +130,10 @@ public class MybatisConfiguration implements DebbieConfiguration {
 
     public void setCache(Cache cache) {
         this.cache = cache;
+    }
+
+    @Override
+    public void reset() {
+
     }
 }
