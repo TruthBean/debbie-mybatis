@@ -368,7 +368,7 @@ public class SqlSessionTemplate implements SqlSession, BeanClosure {
      */
     private class SqlSessionInterceptor implements InvocationHandler {
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        public synchronized Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             SqlSession sqlSession = SqlSessionUtils.getSqlSession(SqlSessionTemplate.this.sqlSessionFactory, SqlSessionTemplate.this.executorType);
             try {
                 Object result = method.invoke(sqlSession, args);

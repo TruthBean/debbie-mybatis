@@ -65,6 +65,7 @@ public class SurnameServiceImpl implements SurnameService, TransactionService {
 
     @Override
     public List<Surname> selectAll() {
+        System.out.println("66666666");
         surnameRepository.findAll();
         // SqlSession sqlSession = sqlSessionFactory.openSession(getConnection());
         // var surnameMapper = sqlSession.getMapper(SurnameMapper.class);

@@ -69,11 +69,24 @@ class SurnameServiceTest {
 
     @Test
     void selectAll(@BeanInject SurnameService surnameService) {
-        List<Surname> surnames = surnameService.selectAll();
-        System.out.println(surnames);
-        System.out.println("-----------------------------------------------------");
-        surnames = surnameService.selectAll();
-        System.out.println(surnames);
+        doSelectAll(surnameService);
+    }
+
+    void doSelectAll(SurnameService surnameService) {
+        for (int i = 0; i < 1; i++) {
+            new Thread(() -> {
+                List<Surname> surnames = surnameService.selectAll();
+                System.out.println(surnames);
+                System.out.println("-----------------------------------------------------");
+                surnames = surnameService.selectAll();
+                System.out.println(surnames);
+            }).start();
+        }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
