@@ -6,11 +6,13 @@
 
     <groupId>com.truthbean.debbie</groupId>
     <artifactId>debbie-mybatis</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2-RELEASE</version>
 
     <packaging>jar</packaging>
 
     <name>debbie-mybatis</name>
+    <description>debbie framework integration for MyBatis 3</description>
+    <url>http://www.truthbean.com/debbie-mybatis</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -82,7 +84,7 @@
         <dependency>
             <groupId>com.truthbean.debbie</groupId>
             <artifactId>debbie-jdbc</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -129,7 +131,7 @@
         <dependency>
             <groupId>com.truthbean.debbie</groupId>
             <artifactId>debbie-hikari</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -143,7 +145,7 @@
         <dependency>
             <groupId>com.truthbean.debbie</groupId>
             <artifactId>debbie-test</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 

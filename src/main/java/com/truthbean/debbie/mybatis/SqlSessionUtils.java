@@ -41,6 +41,7 @@ public final class SqlSessionUtils {
      * {@code DataSource} and {@code ExecutorType}
      *
      * @param sessionFactory a MyBatis {@code SqlSessionFactory} to create new sessions
+     * @param executorType executor type
      * @return a MyBatis {@code SqlSession}
      */
     public static SqlSession getSqlSession(SqlSessionFactory sessionFactory, ExecutorType executorType) {
