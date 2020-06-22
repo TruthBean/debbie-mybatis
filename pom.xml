@@ -6,7 +6,7 @@
 
     <groupId>com.truthbean.debbie</groupId>
     <artifactId>debbie-mybatis</artifactId>
-    <version>0.0.2-RELEASE</version>
+    <version>0.1.0-SNAPSHOT</version>
 
     <packaging>jar</packaging>
 
