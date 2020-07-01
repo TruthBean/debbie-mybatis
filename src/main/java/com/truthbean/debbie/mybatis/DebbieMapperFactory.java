@@ -10,7 +10,7 @@
 package com.truthbean.debbie.mybatis;
 
 import com.truthbean.debbie.bean.BeanFactory;
-import com.truthbean.debbie.bean.BeanFactoryHandler;
+import com.truthbean.debbie.bean.BeanFactoryContext;
 import com.truthbean.debbie.mybatis.support.SqlSessionDebbieSupport;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -24,7 +24,7 @@ public class DebbieMapperFactory<Mapper> extends SqlSessionDebbieSupport impleme
 
     private SqlSessionFactory sqlSessionFactory;
     private SqlSessionFactoryHandler handler;
-    private BeanFactoryHandler beanFactoryHandler;
+    private BeanFactoryContext context;
 
     public DebbieMapperFactory() {
     }
@@ -37,8 +37,8 @@ public class DebbieMapperFactory<Mapper> extends SqlSessionDebbieSupport impleme
     }
 
     @Override
-    public void setBeanFactoryHandler(BeanFactoryHandler beanFactoryHandler) {
-        this.beanFactoryHandler = beanFactoryHandler;
+    public void setBeanFactoryContext(BeanFactoryContext context) {
+        this.context = context;
     }
 
     public void setHandler(SqlSessionFactoryHandler handler) {

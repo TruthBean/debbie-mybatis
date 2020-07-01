@@ -9,16 +9,14 @@
  */
 package com.truthbean.debbie.mybatis.transaction;
 
-import com.truthbean.debbie.bean.BeanFactoryHandler;
+import com.truthbean.debbie.bean.BeanFactoryContext;
 import com.truthbean.debbie.bean.BeanInitialization;
 import com.truthbean.debbie.jdbc.transaction.TransactionInfo;
 import com.truthbean.debbie.proxy.MethodProxyHandler;
 import com.truthbean.debbie.jdbc.annotation.JdbcTransactional;
-import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
 import com.truthbean.debbie.jdbc.transaction.MethodNoJdbcTransactionalException;
 import com.truthbean.debbie.jdbc.transaction.TransactionManager;
 
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import com.truthbean.Logger;
 import com.truthbean.logger.LoggerFactory;
@@ -76,8 +74,8 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
     }
 
     @Override
-    public void setBeanFactoryHandler(BeanFactoryHandler beanFactoryHandler) {
-        beanInitialization = beanFactoryHandler.getBeanInitialization();
+    public void setApplicationContext(BeanFactoryContext context) {
+        beanInitialization = context.getBeanInitialization();
     }
 
     @Override
@@ -124,8 +122,9 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
     @Override
     public void after() {
         LOGGER.debug("running after method (" + transactionInfo.getMethod() + ") invoke ..");
-        if (!autoCommit)
+        if (!autoCommit) {
             transactionInfo.commit();
+        }
     }
 
     @Override

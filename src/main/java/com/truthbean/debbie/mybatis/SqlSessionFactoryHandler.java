@@ -9,7 +9,7 @@
  */
 package com.truthbean.debbie.mybatis;
 
-import com.truthbean.debbie.bean.BeanFactoryHandler;
+import com.truthbean.debbie.bean.BeanFactoryContext;
 import com.truthbean.debbie.bean.BeanInitialization;
 import com.truthbean.debbie.bean.DebbieBeanInfo;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
@@ -56,13 +56,13 @@ public class SqlSessionFactoryHandler {
     private Configuration configuration;
     private InputStream mybatisConfigXmlInputStream;
 
-    private final BeanFactoryHandler beanFactoryHandler;
+    private final BeanFactoryContext context;
     private final BeanInitialization beanInitialization;
 
-    public SqlSessionFactoryHandler(DebbieConfigurationFactory configurationFactory, BeanFactoryHandler beanFactoryHandler) {
-        this.beanFactoryHandler = beanFactoryHandler;
-        this.beanInitialization = beanFactoryHandler.getBeanInitialization();
-        this.mybatisConfiguration = new MybatisProperties(beanFactoryHandler).loadConfiguration();
+    public SqlSessionFactoryHandler(DebbieConfigurationFactory configurationFactory, BeanFactoryContext context) {
+        this.context = context;
+        this.beanInitialization = context.getBeanInitialization();
+        this.mybatisConfiguration = new MybatisProperties(context).loadConfiguration();
         if (getMybatisConfigXmlInputStream() == null) {
             buildConfiguration(configurationFactory);
         }
@@ -97,9 +97,9 @@ public class SqlSessionFactoryHandler {
     private DataSourceFactory getDataSourceFactoryOrInitIfNull(DebbieConfigurationFactory configurationFactory) {
         DataSourceFactory dataSourceFactory = beanInitialization.getRegisterBean(DataSourceFactory.class);
         if (dataSourceFactory == null) {
-            var register = new DataSourceFactoryBeanRegister(configurationFactory, beanFactoryHandler);
+            var register = new DataSourceFactoryBeanRegister(configurationFactory, context);
             register.registerDataSourceFactory();
-            beanFactoryHandler.refreshBeans();
+            context.refreshBeans();
             dataSourceFactory = beanInitialization.getRegisterBean(DataSourceFactory.class);
         }
         return dataSourceFactory;

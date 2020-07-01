@@ -9,7 +9,7 @@
  */
 package com.truthbean.debbie.mybatis.annotation;
 
-import com.truthbean.debbie.bean.BeanFactoryHandler;
+import com.truthbean.debbie.bean.BeanFactoryContext;
 import com.truthbean.debbie.bean.BeanInitialization;
 import com.truthbean.debbie.bean.DebbieBeanInfo;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactoryBeanRegister;
@@ -30,13 +30,13 @@ public class MappedBeanRegister extends DataSourceFactoryBeanRegister {
 
     private final SqlSessionFactoryHandler sqlSessionFactoryHandler;
     private final BeanInitialization beanInitialization;
-    private final BeanFactoryHandler beanFactoryHandler;
+    private final BeanFactoryContext context;
 
-    public MappedBeanRegister(DebbieConfigurationFactory configurationFactory, BeanFactoryHandler beanFactoryHandler) {
-        super(configurationFactory, beanFactoryHandler);
-        this.beanFactoryHandler = beanFactoryHandler;
-        sqlSessionFactoryHandler = new SqlSessionFactoryHandler(configurationFactory, beanFactoryHandler);
-        beanInitialization = beanFactoryHandler.getBeanInitialization();
+    public MappedBeanRegister(DebbieConfigurationFactory configurationFactory, BeanFactoryContext context) {
+        super(configurationFactory, context);
+        this.context = context;
+        sqlSessionFactoryHandler = new SqlSessionFactoryHandler(configurationFactory, context);
+        beanInitialization = context.getBeanInitialization();
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -46,10 +46,10 @@ public class MappedBeanRegister extends DataSourceFactoryBeanRegister {
             for (DebbieBeanInfo<?> mapperBean : annotatedClass) {
                 DebbieMapperFactory mapperFactory = new DebbieMapperFactory<>(mapperBean.getBeanClass(),
                         sqlSessionFactoryHandler);
-                mapperFactory.setBeanFactoryHandler(beanFactoryHandler);
+                mapperFactory.setBeanFactoryContext(context);
                 mapperBean.setBeanFactory(mapperFactory);
                 beanInitialization.refreshBean(mapperBean);
-                beanFactoryHandler.refreshBeans();
+                context.refreshBeans();
             }
         }
     }

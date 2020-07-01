@@ -9,7 +9,7 @@
  */
 package com.truthbean.debbie.mybatis;
 
-import com.truthbean.debbie.bean.BeanFactoryHandler;
+import com.truthbean.debbie.bean.BeanFactoryContext;
 import com.truthbean.debbie.boot.DebbieApplicationFactory;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
 import com.truthbean.debbie.properties.DebbieConfigurationFactory;
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 
 public class MybatisTest {
 
-    private static BeanFactoryHandler beanFactoryHandler;
+    private static BeanFactoryContext beanFactoryHandler;
     private static DebbieConfigurationFactory configurationFactory;
 
     @BeforeAll

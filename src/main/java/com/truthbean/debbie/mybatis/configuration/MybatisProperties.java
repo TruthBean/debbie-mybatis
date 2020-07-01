@@ -9,9 +9,8 @@
  */
 package com.truthbean.debbie.mybatis.configuration;
 
-import com.truthbean.debbie.bean.BeanFactoryHandler;
+import com.truthbean.debbie.bean.BeanFactoryContext;
 import com.truthbean.debbie.io.ResourceResolver;
-import com.truthbean.debbie.net.uri.AntPathMatcher;
 import com.truthbean.debbie.properties.BaseProperties;
 
 import java.util.ArrayList;
@@ -33,19 +32,19 @@ public class MybatisProperties extends BaseProperties {
     private final MybatisConfiguration configuration;
     private static MybatisProperties instance;
 
-    public MybatisProperties(BeanFactoryHandler beanFactoryHandler) {
+    public MybatisProperties(BeanFactoryContext context) {
         configuration = new MybatisConfiguration();
 
         configuration.setMybatisConfigXmlLocation(getValue(MYBATIS_CONFIG_XML_LOCATION));
         configuration.setEnvironment(getStringValue(MYBATIS_ENVIRONMENT, "default"));
 
-        MyBatisConfigurationSettings settings = beanFactoryHandler.factory(MyBatisConfigurationSettings.class);
+        MyBatisConfigurationSettings settings = context.factory(MyBatisConfigurationSettings.class);
         configuration.setSettings(settings);
 
         configuration.setConfigurationProperties(getMatchedKey(MYBATIS_PROPERTIES));
 
         List<String> list = getStringListValue(MYBATIS_MAPPER_LOCATIONS, ";");
-        ResourceResolver resourceResolver = beanFactoryHandler.getResourceResolver();
+        ResourceResolver resourceResolver = context.getResourceResolver();
         resolveMapperLocations(list, resourceResolver);
     }
 
@@ -59,9 +58,9 @@ public class MybatisProperties extends BaseProperties {
         configuration.setMapperLocations(list);
     }
 
-    public static MybatisConfiguration toConfiguration(BeanFactoryHandler beanFactoryHandler) {
+    public static MybatisConfiguration toConfiguration(BeanFactoryContext context) {
         if (instance == null) {
-            instance = new MybatisProperties(beanFactoryHandler);
+            instance = new MybatisProperties(context);
         }
         return instance.configuration;
     }

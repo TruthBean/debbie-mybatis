@@ -9,7 +9,7 @@
  */
 package com.truthbean.debbie.mybatis;
 
-import com.truthbean.debbie.bean.BeanFactoryHandler;
+import com.truthbean.debbie.bean.BeanFactoryContext;
 import com.truthbean.debbie.bean.BeanInitialization;
 import com.truthbean.debbie.boot.DebbieModuleStarter;
 import com.truthbean.debbie.mybatis.annotation.*;
@@ -28,7 +28,7 @@ import org.apache.ibatis.type.JdbcType;
  */
 public class MybatisModuleStarter implements DebbieModuleStarter {
     @Override
-    public void registerBean(BeanFactoryHandler beanFactoryHandler, BeanInitialization beanInitialization) {
+    public void registerBean(BeanFactoryContext context, BeanInitialization beanInitialization) {
         beanInitialization.init(MyBatisConfigurationSettings.class);
 
         registerTransformer(beanInitialization);
@@ -51,8 +51,8 @@ public class MybatisModuleStarter implements DebbieModuleStarter {
     }
 
     @Override
-    public void configure(DebbieConfigurationFactory configurationFactory, BeanFactoryHandler beanFactoryHandler) {
-        MappedBeanRegister register = new MappedBeanRegister(configurationFactory, beanFactoryHandler);
+    public void configure(DebbieConfigurationFactory configurationFactory, BeanFactoryContext context) {
+        MappedBeanRegister register = new MappedBeanRegister(configurationFactory, context);
         register.registerMapper();
         register.registerSqlSessionFactory();
     }
