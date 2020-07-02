@@ -9,8 +9,8 @@
  */
 package com.truthbean.debbie.mybatis.transaction;
 
-import com.truthbean.debbie.bean.BeanFactoryContext;
 import com.truthbean.debbie.bean.BeanInitialization;
+import com.truthbean.debbie.bean.DebbieApplicationContext;
 import com.truthbean.debbie.jdbc.transaction.TransactionInfo;
 import com.truthbean.debbie.proxy.MethodProxyHandler;
 import com.truthbean.debbie.jdbc.annotation.JdbcTransactional;
@@ -74,7 +74,7 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
     }
 
     @Override
-    public void setApplicationContext(BeanFactoryContext context) {
+    public void setApplicationContext(DebbieApplicationContext context) {
         beanInitialization = context.getBeanInitialization();
     }
 

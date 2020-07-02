@@ -9,8 +9,8 @@
  */
 package com.truthbean.debbie.mybatis.annotation;
 
-import com.truthbean.debbie.bean.BeanFactoryContext;
 import com.truthbean.debbie.bean.BeanInitialization;
+import com.truthbean.debbie.bean.DebbieApplicationContext;
 import com.truthbean.debbie.bean.DebbieBeanInfo;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactoryBeanRegister;
 import com.truthbean.debbie.mybatis.DebbieMapperFactory;
@@ -30,9 +30,9 @@ public class MappedBeanRegister extends DataSourceFactoryBeanRegister {
 
     private final SqlSessionFactoryHandler sqlSessionFactoryHandler;
     private final BeanInitialization beanInitialization;
-    private final BeanFactoryContext context;
+    private final DebbieApplicationContext context;
 
-    public MappedBeanRegister(DebbieConfigurationFactory configurationFactory, BeanFactoryContext context) {
+    public MappedBeanRegister(DebbieConfigurationFactory configurationFactory, DebbieApplicationContext context) {
         super(configurationFactory, context);
         this.context = context;
         sqlSessionFactoryHandler = new SqlSessionFactoryHandler(configurationFactory, context);
@@ -46,7 +46,7 @@ public class MappedBeanRegister extends DataSourceFactoryBeanRegister {
             for (DebbieBeanInfo<?> mapperBean : annotatedClass) {
                 DebbieMapperFactory mapperFactory = new DebbieMapperFactory<>(mapperBean.getBeanClass(),
                         sqlSessionFactoryHandler);
-                mapperFactory.setBeanFactoryContext(context);
+                mapperFactory.setGlobalBeanFactory(context.getGlobalBeanFactory());
                 mapperBean.setBeanFactory(mapperFactory);
                 beanInitialization.refreshBean(mapperBean);
                 context.refreshBeans();

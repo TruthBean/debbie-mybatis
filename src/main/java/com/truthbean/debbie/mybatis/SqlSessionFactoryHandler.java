@@ -9,8 +9,8 @@
  */
 package com.truthbean.debbie.mybatis;
 
-import com.truthbean.debbie.bean.BeanFactoryContext;
 import com.truthbean.debbie.bean.BeanInitialization;
+import com.truthbean.debbie.bean.DebbieApplicationContext;
 import com.truthbean.debbie.bean.DebbieBeanInfo;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactoryBeanRegister;
@@ -56,10 +56,10 @@ public class SqlSessionFactoryHandler {
     private Configuration configuration;
     private InputStream mybatisConfigXmlInputStream;
 
-    private final BeanFactoryContext context;
+    private final DebbieApplicationContext context;
     private final BeanInitialization beanInitialization;
 
-    public SqlSessionFactoryHandler(DebbieConfigurationFactory configurationFactory, BeanFactoryContext context) {
+    public SqlSessionFactoryHandler(DebbieConfigurationFactory configurationFactory, DebbieApplicationContext context) {
         this.context = context;
         this.beanInitialization = context.getBeanInitialization();
         this.mybatisConfiguration = new MybatisProperties(context).loadConfiguration();

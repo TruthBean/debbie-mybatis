@@ -36,7 +36,7 @@ class SurnameServiceImplTest {
 
     @BeforeAll
     static void setUp() {
-        surnameService = beanFactoryHandler.factory("surnameService");
+        surnameService = beanFactoryHandler.getGlobalBeanFactory().factory("surnameService");
     }
 
     @AfterAll
