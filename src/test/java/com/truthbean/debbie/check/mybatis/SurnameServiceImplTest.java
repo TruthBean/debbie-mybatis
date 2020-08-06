@@ -7,15 +7,14 @@
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.truthbean.debbie.mybatis;
+package com.truthbean.debbie.check.mybatis;
 
-import com.truthbean.debbie.boot.DebbieApplicationFactory;
+import com.truthbean.debbie.core.ApplicationFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -28,15 +27,15 @@ import java.util.Optional;
 class SurnameServiceImplTest {
 
     private static SurnameService surnameService;
-    private static DebbieApplicationFactory beanFactoryHandler;
+    private static ApplicationFactory beanFactoryHandler;
 
     static {
-        beanFactoryHandler = DebbieApplicationFactory.configure(SurnameServiceImplTest.class);
+        beanFactoryHandler = ApplicationFactory.configure(SurnameServiceImplTest.class);
     }
 
     @BeforeAll
     static void setUp() {
-        surnameService = beanFactoryHandler.getGlobalBeanFactory().factory("surnameService");
+        surnameService = beanFactoryHandler.getApplicationContext().getGlobalBeanFactory().factory("surnameService");
     }
 
     @AfterAll

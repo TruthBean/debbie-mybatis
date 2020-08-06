@@ -10,12 +10,12 @@
 package com.truthbean.debbie.mybatis;
 
 import com.truthbean.debbie.bean.BeanInitialization;
-import com.truthbean.debbie.bean.DebbieApplicationContext;
 import com.truthbean.debbie.boot.DebbieModuleStarter;
+import com.truthbean.debbie.core.ApplicationContext;
 import com.truthbean.debbie.mybatis.annotation.*;
 import com.truthbean.debbie.mybatis.configuration.MyBatisConfigurationSettings;
 import com.truthbean.debbie.mybatis.configuration.transformer.*;
-import com.truthbean.debbie.properties.DebbieConfigurationFactory;
+import com.truthbean.debbie.properties.DebbieConfigurationCenter;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.AutoMappingBehavior;
 import org.apache.ibatis.session.AutoMappingUnknownColumnBehavior;
@@ -32,7 +32,7 @@ import org.apache.ibatis.type.MappedTypes;
  */
 public class MybatisModuleStarter implements DebbieModuleStarter {
     @Override
-    public void registerBean(DebbieApplicationContext context, BeanInitialization beanInitialization) {
+    public void registerBean(ApplicationContext context, BeanInitialization beanInitialization) {
         beanInitialization.init(MyBatisConfigurationSettings.class);
 
         registerTransformer(beanInitialization);
@@ -55,7 +55,7 @@ public class MybatisModuleStarter implements DebbieModuleStarter {
     }
 
     @Override
-    public void configure(DebbieConfigurationFactory configurationFactory, DebbieApplicationContext context) {
+    public void configure(DebbieConfigurationCenter configurationFactory, ApplicationContext context) {
         MappedBeanRegister register = new MappedBeanRegister(configurationFactory, context);
         register.registerMapper();
         register.registerSqlSessionFactory();

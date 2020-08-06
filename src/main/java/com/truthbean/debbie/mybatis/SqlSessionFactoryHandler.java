@@ -10,14 +10,14 @@
 package com.truthbean.debbie.mybatis;
 
 import com.truthbean.debbie.bean.BeanInitialization;
-import com.truthbean.debbie.bean.DebbieApplicationContext;
 import com.truthbean.debbie.bean.DebbieBeanInfo;
+import com.truthbean.debbie.core.ApplicationContext;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactoryBeanRegister;
 import com.truthbean.debbie.mybatis.configuration.MybatisConfiguration;
 import com.truthbean.debbie.mybatis.configuration.MybatisProperties;
 import com.truthbean.debbie.mybatis.transaction.DebbieManagedTransactionFactory;
-import com.truthbean.debbie.properties.DebbieConfigurationFactory;
+import com.truthbean.debbie.properties.DebbieConfigurationCenter;
 import com.truthbean.debbie.reflection.ClassLoaderUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.builder.xml.XMLMapperBuilder;
@@ -56,10 +56,10 @@ public class SqlSessionFactoryHandler {
     private Configuration configuration;
     private InputStream mybatisConfigXmlInputStream;
 
-    private final DebbieApplicationContext context;
+    private final ApplicationContext context;
     private final BeanInitialization beanInitialization;
 
-    public SqlSessionFactoryHandler(DebbieConfigurationFactory configurationFactory, DebbieApplicationContext context) {
+    public SqlSessionFactoryHandler(DebbieConfigurationCenter configurationFactory, ApplicationContext context) {
         this.context = context;
         this.beanInitialization = context.getBeanInitialization();
         this.mybatisConfiguration = new MybatisProperties(context).loadConfiguration();
@@ -94,7 +94,7 @@ public class SqlSessionFactoryHandler {
         }
     }
 
-    private DataSourceFactory getDataSourceFactoryOrInitIfNull(DebbieConfigurationFactory configurationFactory) {
+    private DataSourceFactory getDataSourceFactoryOrInitIfNull(DebbieConfigurationCenter configurationFactory) {
         DataSourceFactory dataSourceFactory = beanInitialization.getRegisterBean(DataSourceFactory.class);
         if (dataSourceFactory == null) {
             var register = new DataSourceFactoryBeanRegister(configurationFactory, context);
@@ -105,7 +105,7 @@ public class SqlSessionFactoryHandler {
         return dataSourceFactory;
     }
 
-    private void buildConfiguration(DebbieConfigurationFactory configurationFactory) {
+    private void buildConfiguration(DebbieConfigurationCenter configurationFactory) {
         DataSourceFactory dataSourceFactory = getDataSourceFactoryOrInitIfNull(configurationFactory);
         DataSource dataSource = dataSourceFactory.getDataSource();
         TransactionFactory transactionFactory = new DebbieManagedTransactionFactory(dataSourceFactory.getDriverName());

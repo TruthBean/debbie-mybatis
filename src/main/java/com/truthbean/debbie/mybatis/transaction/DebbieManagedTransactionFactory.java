@@ -10,9 +10,7 @@
 package com.truthbean.debbie.mybatis.transaction;
 
 import com.truthbean.debbie.jdbc.datasource.DataSourceDriverName;
-import com.truthbean.debbie.jdbc.datasource.DriverConnection;
 import com.truthbean.debbie.jdbc.transaction.TransactionManager;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.TransactionIsolationLevel;
 import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.transaction.TransactionFactory;
@@ -49,10 +47,8 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
         try {
             Connection connection = dataSource.getConnection();
             LOGGER.debug("connection ({}) created by dataSource", connection);
-            DriverConnection driverConnection = new DriverConnection();
-            driverConnection.setConnection(connection);
-            driverConnection.setDriverName(driverName);
-            transactionInfo.setConnection(driverConnection);
+            transactionInfo.setConnection(connection);
+            transactionInfo.setDriverName(driverName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -71,10 +67,8 @@ public class DebbieManagedTransactionFactory implements TransactionFactory {
     public Transaction newTransaction(Connection connection) {
         LOGGER.debug("create MybatisTransactionInfo by connection {} ", connection);
         MybatisTransactionInfo transactionInfo = new MybatisTransactionInfo();
-        DriverConnection driverConnection = new DriverConnection();
-        driverConnection.setConnection(connection);
-        driverConnection.setDriverName(driverName);
-        transactionInfo.setConnection(driverConnection);
+        transactionInfo.setConnection(connection);
+        transactionInfo.setDriverName(driverName);
         TransactionManager.offer(transactionInfo);
         return transactionInfo;
         // throw new UnsupportedOperationException("New Debbie transactions require a DataSource");

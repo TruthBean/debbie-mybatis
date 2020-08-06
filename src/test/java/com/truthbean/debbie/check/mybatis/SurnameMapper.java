@@ -7,19 +7,23 @@
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.truthbean.debbie.mybatis;
+package com.truthbean.debbie.check.mybatis;
 
+import com.truthbean.debbie.bean.BeanComponent;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/**
- * @author TruthBean/Rogar·Q
- * @since 0.0.2
- * Created on 2020-03-23 17:09
- */
 @Mapper
-public interface SystemUserMapper {
+@BeanComponent
+public interface SurnameMapper {
 
-    List<SystemUser> selectAll();
+    Surname selectOne(@Param("id") Long id);
+
+    List<Surname> selectAll();
+
+    int update(Surname surname);
+
+    long insert(Surname surname);
 }

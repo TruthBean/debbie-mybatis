@@ -7,17 +7,15 @@
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.truthbean.debbie.mybatis;
+package com.truthbean.debbie.check.mybatis;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.truthbean.debbie.jdbc.annotation.SqlRepository;
+import com.truthbean.debbie.jdbc.repository.CustomRepository;
 
-import java.time.LocalDateTime;
-
-@Mapper
-public interface DateTimeMapper {
-
-  @Select("SELECT current_timestamp")
-  LocalDateTime now();
-
+/**
+ * @author truthbean/Rogar·Q
+ * @since 0.0.2
+ */
+@SqlRepository
+public class SurnameRepository extends CustomRepository<Surname, Integer> {
 }

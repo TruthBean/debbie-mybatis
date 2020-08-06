@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.truthbean.debbie.mybatis.SystemUserMapper">
+<mapper namespace="com.truthbean.debbie.check.mybatis.SystemUserMapper">
 
-    <resultMap id="sys_user" type="com.truthbean.debbie.mybatis.SystemUser">
+    <resultMap id="sys_user" type="com.truthbean.debbie.check.mybatis.SystemUser">
         <id property="id" column="f_id" />
         <result property="createTime" column="f_createtime" />
         <result property="email" column="f_email" />

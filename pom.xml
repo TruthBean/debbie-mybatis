@@ -89,8 +89,8 @@
 
         <dependency>
             <groupId>com.truthbean.logger</groupId>
-            <artifactId>core</artifactId>
-            <version>${project.version}</version>
+            <artifactId>logger-core</artifactId>
+            <version>0.1.1-RELEASE</version>
             <scope>provided</scope>
         </dependency>
 
@@ -128,12 +128,12 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>com.truthbean.debbie</groupId>
             <artifactId>debbie-hikari</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -151,8 +151,8 @@
 
         <dependency>
             <groupId>com.truthbean.logger</groupId>
-            <artifactId>slf4j</artifactId>
-            <version>${project.version}</version>
+            <artifactId>slf4j-adapter</artifactId>
+            <version>0.1.1-RELEASE</version>
             <scope>test</scope>
         </dependency>
 
@@ -234,7 +234,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.9.0</version>
+                <version>3.9.1</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

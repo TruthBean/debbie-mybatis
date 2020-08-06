@@ -10,7 +10,7 @@
 package com.truthbean.debbie.mybatis.transaction;
 
 import com.truthbean.debbie.bean.BeanInitialization;
-import com.truthbean.debbie.bean.DebbieApplicationContext;
+import com.truthbean.debbie.core.ApplicationContext;
 import com.truthbean.debbie.jdbc.transaction.TransactionInfo;
 import com.truthbean.debbie.proxy.MethodProxyHandler;
 import com.truthbean.debbie.jdbc.annotation.JdbcTransactional;
@@ -70,11 +70,11 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
 
     @Override
     public void setMethod(Method method) {
-        transactionInfo.setMethod(method);
+        transactionInfo.bindMethod(method);
     }
 
     @Override
-    public void setApplicationContext(DebbieApplicationContext context) {
+    public void setApplicationContext(ApplicationContext context) {
         beanInitialization = context.getBeanInitialization();
     }
 
@@ -94,7 +94,7 @@ public class MybatisTransactionalHandler implements MethodProxyHandler<JdbcTrans
             // 创建mapper的connection与事务的connection不是同一个
             // transactionInfo.setConnection(dataSourceFactory.getConnection());
         } else {
-            transactionInfo.setConnection(peek.getDriverConnection());
+            transactionInfo.setConnection(peek.getConnection());
             TransactionManager.remove();
         }
 

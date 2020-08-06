@@ -9,7 +9,7 @@
  */
 package com.truthbean.debbie.mybatis.configuration;
 
-import com.truthbean.debbie.bean.DebbieApplicationContext;
+import com.truthbean.debbie.core.ApplicationContext;
 import com.truthbean.debbie.io.ResourceResolver;
 import com.truthbean.debbie.properties.BaseProperties;
 
@@ -32,7 +32,7 @@ public class MybatisProperties extends BaseProperties {
     private final MybatisConfiguration configuration;
     private static MybatisProperties instance;
 
-    public MybatisProperties(DebbieApplicationContext context) {
+    public MybatisProperties(ApplicationContext context) {
         configuration = new MybatisConfiguration();
 
         configuration.setMybatisConfigXmlLocation(getValue(MYBATIS_CONFIG_XML_LOCATION));
@@ -58,7 +58,7 @@ public class MybatisProperties extends BaseProperties {
         configuration.setMapperLocations(list);
     }
 
-    public static MybatisConfiguration toConfiguration(DebbieApplicationContext context) {
+    public static MybatisConfiguration toConfiguration(ApplicationContext context) {
         if (instance == null) {
             instance = new MybatisProperties(context);
         }

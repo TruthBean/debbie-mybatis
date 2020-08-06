@@ -7,16 +7,13 @@
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.truthbean.debbie.mybatis;
+package com.truthbean.debbie.check.mybatis;
 
 import com.truthbean.debbie.bean.BeanComponent;
 import com.truthbean.debbie.bean.BeanInject;
 import com.truthbean.debbie.jdbc.annotation.JdbcTransactional;
-import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
 import com.truthbean.debbie.jdbc.transaction.TransactionInfo;
 import com.truthbean.debbie.jdbc.transaction.TransactionService;
-import com.truthbean.debbie.mybatis.transaction.MybatisTransactionInfo;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import java.util.List;

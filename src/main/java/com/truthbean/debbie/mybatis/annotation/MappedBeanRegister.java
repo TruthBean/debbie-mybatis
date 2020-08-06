@@ -10,12 +10,12 @@
 package com.truthbean.debbie.mybatis.annotation;
 
 import com.truthbean.debbie.bean.BeanInitialization;
-import com.truthbean.debbie.bean.DebbieApplicationContext;
 import com.truthbean.debbie.bean.DebbieBeanInfo;
+import com.truthbean.debbie.core.ApplicationContext;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactoryBeanRegister;
 import com.truthbean.debbie.mybatis.DebbieMapperFactory;
 import com.truthbean.debbie.mybatis.SqlSessionFactoryHandler;
-import com.truthbean.debbie.properties.DebbieConfigurationFactory;
+import com.truthbean.debbie.properties.DebbieConfigurationCenter;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -30,9 +30,9 @@ public class MappedBeanRegister extends DataSourceFactoryBeanRegister {
 
     private final SqlSessionFactoryHandler sqlSessionFactoryHandler;
     private final BeanInitialization beanInitialization;
-    private final DebbieApplicationContext context;
+    private final ApplicationContext context;
 
-    public MappedBeanRegister(DebbieConfigurationFactory configurationFactory, DebbieApplicationContext context) {
+    public MappedBeanRegister(DebbieConfigurationCenter configurationFactory, ApplicationContext context) {
         super(configurationFactory, context);
         this.context = context;
         sqlSessionFactoryHandler = new SqlSessionFactoryHandler(configurationFactory, context);
@@ -53,40 +53,6 @@ public class MappedBeanRegister extends DataSourceFactoryBeanRegister {
             }
         }
     }
-
-    /*public void register() {
-        BeanScanConfiguration configuration = ClassesScanProperties.toConfiguration();
-        Set<Class<?>> targetClasses = configuration.getTargetClasses();
-        if (targetClasses != null && !targetClasses.isEmpty()) {
-            for (Class<?> targetClass : targetClasses) {
-                Annotation[] annotations = targetClass.getAnnotations();
-                if (annotations != null && annotations.length > 0) {
-                    var register = false;
-                    for (Annotation annotation : annotations) {
-                        var type = annotation.annotationType();
-                        if (type == Mapper.class) {
-                            DebbieBeanInfo beanInfo = new DebbieBeanInfo<>(targetClass);
-                            beanInfo.setBeanFactory(new DebbieMapperFactory<>(targetClass, sqlSessionFactoryHandler));
-                            beanInitialization.init(beanInfo);
-                            beanFactoryHandler.refreshBeans();
-                            register = true;
-                            break;
-                        } else if (type == MappedJdbcTypes.class || type == MappedTypes.class) {
-                            DebbieBeanInfo beanInfo = new DebbieBeanInfo<>(targetClass);
-                            beanInitialization.init(beanInfo);
-                            beanFactoryHandler.refreshBeans();
-                            register = true;
-                            break;
-                        }
-                    }
-                    if (!register) {
-                        beanInitialization.init(targetClass);
-                        beanFactoryHandler.refreshBeans();
-                    }
-                }
-            }
-        }
-    }*/
 
     public void registerSqlSessionFactory() {
         registerSingletonBean(sqlSessionFactoryHandler.buildSqlSessionFactory(), SqlSessionFactory.class, "sqlSessionFactory");

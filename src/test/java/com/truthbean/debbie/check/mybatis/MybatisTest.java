@@ -7,12 +7,13 @@
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.truthbean.debbie.mybatis;
+package com.truthbean.debbie.check.mybatis;
 
-import com.truthbean.debbie.bean.DebbieApplicationContext;
-import com.truthbean.debbie.boot.DebbieApplicationFactory;
+import com.truthbean.debbie.core.ApplicationContext;
+import com.truthbean.debbie.core.ApplicationFactory;
 import com.truthbean.debbie.jdbc.datasource.DataSourceFactory;
-import com.truthbean.debbie.properties.DebbieConfigurationFactory;
+import com.truthbean.debbie.mybatis.SqlSessionFactoryHandler;
+import com.truthbean.debbie.properties.DebbieConfigurationCenter;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.BeforeAll;
@@ -23,14 +24,15 @@ import java.time.LocalDateTime;
 
 public class MybatisTest {
 
-    private static DebbieApplicationContext beanFactoryHandler;
-    private static DebbieConfigurationFactory configurationFactory;
+    private static ApplicationContext beanFactoryHandler;
+    private static DebbieConfigurationCenter configurationFactory;
 
     @BeforeAll
     static void before() {
-        DebbieApplicationFactory beanFactoryHandler = DebbieApplicationFactory.configure(MybatisTest.class);
+        ApplicationFactory applicationFactory = ApplicationFactory.configure(MybatisTest.class);
+        ApplicationContext applicationContext = applicationFactory.getApplicationContext();
         DataSourceFactory dataSourceFactory = beanFactoryHandler.getGlobalBeanFactory().factory("dataSourceFactory");
-        configurationFactory = beanFactoryHandler.getConfigurationFactory();
+        configurationFactory = applicationContext.getConfigurationCenter();
         MybatisTest.beanFactoryHandler = beanFactoryHandler;
     }
 

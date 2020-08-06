@@ -7,8 +7,9 @@
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-package com.truthbean.debbie.mybatis;
+package com.truthbean.debbie.check.mybatis;
 
+import com.truthbean.debbie.bean.BeanComponent;
 import com.truthbean.debbie.jdbc.annotation.SqlColumn;
 import com.truthbean.debbie.jdbc.annotation.SqlEntity;
 import com.truthbean.debbie.jdbc.column.PrimaryKeyType;
@@ -20,6 +21,7 @@ import java.sql.Timestamp;
 
 @Alias("Surname")
 @SqlEntity(charset = "utf8mb4")
+@BeanComponent
 public class Surname implements Serializable {
 
     @SqlColumn(id = true, comment = "主键", primaryKey = PrimaryKeyType.AUTO_INCREMENT)

@@ -1,19 +1,16 @@
-package com.truthbean.debbie.mybatis;
+package com.truthbean.debbie.check.mybatis;
 
 import com.truthbean.debbie.bean.BeanInject;
-import com.truthbean.debbie.test.DebbieApplicationExtension;
+import com.truthbean.debbie.test.annotation.DebbieApplicationTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author TruthBean/Rogar·Q
  * @since Created on 2020-06-24 16:49.
  */
-@ExtendWith({DebbieApplicationExtension.class})
+@DebbieApplicationTest
 class SystemUserServiceTest {
 
     @BeanInject

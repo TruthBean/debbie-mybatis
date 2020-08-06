@@ -21,6 +21,6 @@
 
     <mappers>
         <mapper resource="com/truthbean/debbie/mybatis/SurnameMapper.xml"/>
-        <mapper class="com.truthbean.debbie.mybatis.DateTimeMapper"/>
+        <mapper class="com.truthbean.debbie.check.mybatis.DateTimeMapper"/>
     </mappers>
 </configuration>
