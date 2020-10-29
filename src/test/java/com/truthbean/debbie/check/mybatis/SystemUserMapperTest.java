@@ -23,7 +23,7 @@ import java.util.List;
  * @since Created on 2020-03-23 17:13
  */
 @DebbieApplicationTest
-class SystemUserMapperTest {
+public class SystemUserMapperTest {
 
     @BeanInject
     private SystemUserMapper systemUserMapper;

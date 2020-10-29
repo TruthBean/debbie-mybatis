@@ -9,14 +9,12 @@
  */
 package com.truthbean.debbie.check.mybatis;
 
-import com.truthbean.debbie.bean.BeanComponent;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDateTime;
 
 @Mapper
-@BeanComponent
 public interface DateTimeMapper {
 
   @Select("SELECT current_timestamp")

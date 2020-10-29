@@ -24,21 +24,20 @@ import java.time.LocalDateTime;
 
 public class MybatisTest {
 
-    private static ApplicationContext beanFactoryHandler;
+    private static ApplicationContext applicationContext;
     private static DebbieConfigurationCenter configurationFactory;
 
     @BeforeAll
     static void before() {
         ApplicationFactory applicationFactory = ApplicationFactory.configure(MybatisTest.class);
-        ApplicationContext applicationContext = applicationFactory.getApplicationContext();
-        DataSourceFactory dataSourceFactory = beanFactoryHandler.getGlobalBeanFactory().factory("dataSourceFactory");
+        applicationContext = applicationFactory.getApplicationContext();
+        DataSourceFactory dataSourceFactory = applicationContext.getGlobalBeanFactory().factory("dataSourceFactory");
         configurationFactory = applicationContext.getConfigurationCenter();
-        MybatisTest.beanFactoryHandler = beanFactoryHandler;
     }
 
     @Test
     public void testSqlSessionFactory() throws IOException {
-        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(configurationFactory, beanFactoryHandler);
+        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(configurationFactory, applicationContext);
         SqlSessionFactory sqlSessionFactory = handler.buildSqlSessionFactory();
 
         System.out.println(sqlSessionFactory);
@@ -46,7 +45,7 @@ public class MybatisTest {
 
     @Test
     public void testSelectOneSurname() throws IOException {
-        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(configurationFactory, beanFactoryHandler);
+        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(configurationFactory, applicationContext);
         SqlSessionFactory sqlSessionFactory = handler.buildSqlSessionFactory();
 
         try (SqlSession session = sqlSessionFactory.openSession()) {
@@ -58,7 +57,7 @@ public class MybatisTest {
 
     @Test
     public void testDataTimeMapper() throws IOException {
-        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(configurationFactory, beanFactoryHandler);
+        SqlSessionFactoryHandler handler = new SqlSessionFactoryHandler(configurationFactory, applicationContext);
         SqlSessionFactory sqlSessionFactory = handler.buildSqlSessionFactory();
 
         try (SqlSession session = sqlSessionFactory.openSession()) {

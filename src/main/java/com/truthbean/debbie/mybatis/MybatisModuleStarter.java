@@ -9,6 +9,7 @@
  */
 package com.truthbean.debbie.mybatis;
 
+import com.truthbean.debbie.bean.BeanComponentParser;
 import com.truthbean.debbie.bean.BeanInitialization;
 import com.truthbean.debbie.boot.DebbieModuleStarter;
 import com.truthbean.debbie.core.ApplicationContext;
@@ -26,21 +27,32 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author truthbean
  * @since 0.0.2
  */
 public class MybatisModuleStarter implements DebbieModuleStarter {
+
+    @Override
+    public Map<Class<? extends Annotation>, BeanComponentParser> getComponentAnnotation() {
+        Map<Class<? extends Annotation>, BeanComponentParser> set = new HashMap<>();
+        BeanComponentParser parser = new SingletonBeanComponentParser();
+        set.put(Mapper.class, parser);
+        set.put(Alias.class, parser);
+        set.put(MappedJdbcTypes.class, parser);
+        set.put(MappedTypes.class, parser);
+        return set;
+    }
+
     @Override
     public void registerBean(ApplicationContext context, BeanInitialization beanInitialization) {
         beanInitialization.init(MyBatisConfigurationSettings.class);
 
         registerTransformer(beanInitialization);
-
-        beanInitialization.registerBeanAnnotation(Mapper.class);
-        beanInitialization.registerBeanAnnotation(Alias.class);
-        beanInitialization.registerBeanAnnotation(MappedJdbcTypes.class);
-        beanInitialization.registerBeanAnnotation(MappedTypes.class);
 
         // MethodProxyHandlerRegister methodProxyHandlerRegister = beanFactoryHandler.getMethodProxyHandlerRegister();
         // methodProxyHandlerRegister.register(JdbcTransactional.class, MybatisTransactionalHandler.class);

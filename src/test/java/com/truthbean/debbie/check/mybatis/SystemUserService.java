@@ -25,6 +25,10 @@ public class SystemUserService {
     @BeanInject
     private SystemUserMapper systemUserMapper;
 
+    public void setSystemUserMapper(SystemUserMapper systemUserMapper) {
+        this.systemUserMapper = systemUserMapper;
+    }
+
     public List<SystemUser> selectAll() {
         return systemUserMapper.selectAll();
     }

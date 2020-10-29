@@ -9,19 +9,16 @@
  */
 package com.truthbean.debbie.check.mybatis;
 
-import com.truthbean.debbie.bean.BeanComponent;
 import com.truthbean.debbie.jdbc.annotation.SqlColumn;
 import com.truthbean.debbie.jdbc.annotation.SqlEntity;
 import com.truthbean.debbie.jdbc.column.PrimaryKeyType;
 import org.apache.ibatis.type.Alias;
 
 import java.io.Serializable;
-import java.net.URL;
 import java.sql.Timestamp;
 
 @Alias("Surname")
 @SqlEntity(charset = "utf8mb4")
-@BeanComponent
 public class Surname implements Serializable {
 
     @SqlColumn(id = true, comment = "主键", primaryKey = PrimaryKeyType.AUTO_INCREMENT)

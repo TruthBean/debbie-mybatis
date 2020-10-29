@@ -11,10 +11,14 @@ import java.util.List;
  * @since Created on 2020-06-24 16:49.
  */
 @DebbieApplicationTest
-class SystemUserServiceTest {
+public class SystemUserServiceTest {
 
     @BeanInject
     private SystemUserService systemUserService;
+
+    public void setSystemUserService(SystemUserService systemUserService) {
+        this.systemUserService = systemUserService;
+    }
 
     @Test
     void selectAll() {
